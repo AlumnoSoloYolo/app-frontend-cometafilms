@@ -1,0 +1,331 @@
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: rgba(10, 10, 10, 0.8);
+  border-radius: 15px;
+  padding: 2rem;
+  position: relative;
+  color: white;
+}
+
+.profile-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 2px;
+  /* background: linear-gradient(45deg, rgb(14, 64, 64), #6B77E5;); */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #6B77E5;;
+  margin-right: 1rem;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #6B77E5;;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-sections .section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+
+.detail-section{
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 8px 8px;
+  padding: 1rem;
+}
+
+h3 {
+  color: #6B77E5;;
+  border-bottom: 2px solid rgba(211, 20, 211, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.movie-actions {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn i {
+  font-size: 1.1rem;
+}
+
+.movie-section {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.movie-scroll-container {
+  position: relative;
+  overflow: hidden;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.movie-scroll-content {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(20% - 1rem);
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 1rem;
+}
+
+.movie-scroll-content::-webkit-scrollbar {
+  display: none;
+}
+
+.section-navigation {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.section-navigation .btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(107, 119, 229, 0.2);
+  color: #6B77E5;
+  border: none;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.section-navigation .btn:hover {
+  background: rgba(107, 119, 229, 0.4);
+  transform: scale(1.1);
+}
+
+.section-navigation .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Contenedor principal más ancho */
+.profile-container {
+  max-width: 1200px; /* Aumentado de 800px para dar más espacio */
+  margin: 40px auto;
+  background: rgba(10, 10, 10, 0.8);
+  border-radius: 15px;
+  padding: 2.5rem; /* Aumentado para mejor espaciado */
+  position: relative;
+  color: white;
+}
+
+/* Mantenemos el borde gradiente pero ajustamos la opacidad */
+.profile-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 2px;
+  /* background: linear-gradient(45deg, rgb(14, 64, 64), #6B77E5;); */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.8; /* Aumentado para un borde más visible */
+  z-index: -1;
+}
+
+/* Mejoramos la sección del avatar y estadísticas */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ 
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px 12px 0 0;
+}
+
+/* Avatar más grande y mejor definido */
+.profile-avatar {
+  width: 120px; /* Aumentado de 100px */
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #6B77E5;;
+  margin-right: 1.5rem;
+  box-shadow: 0 0 20px rgba(211, 20, 211, 0.3);
+}
+
+/* Estadísticas más prominentes */
+.stat-item {
+  min-width: 150px; /* Ancho fijo para uniformidad */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Ajustes para las secciones de películas */
+.movie-section {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Contenedor de scroll mejorado */
+.movie-scroll-container {
+  position: relative;
+  overflow: hidden;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* Ajuste del grid para tarjetas más grandes */
+.movie-scroll-content {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(25% - 1rem); /* Cambiado a 25% para 4 tarjetas en vez de 5 */
+  gap: 1.5rem; /* Más espacio entre tarjetas */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
+
+/* Mejores encabezados de sección */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(211, 20, 211, 0.3);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #6B77E5;;
+  margin: 0;
+}
+
+/* Botones de navegación más elegantes */
+.section-navigation .btn {
+  width: 3rem;
+  height: 3rem;
+  background: rgba(211, 20, 211, 0.2);
+  color: #6B77E5;;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.section-navigation .btn:hover {
+  background: rgba(211, 20, 211, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(211, 20, 211, 0.3);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 1200px) {
+  .movie-scroll-content {
+    grid-auto-columns: calc(33.333% - 1rem); /* 3 tarjetas en pantallas medianas */
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-scroll-content {
+    grid-auto-columns: calc(50% - 1rem); /* 2 tarjetas en tablets */
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-scroll-content {
+    grid-auto-columns: calc(100% - 1rem); /* 1 tarjeta en móviles */
+  }
+}

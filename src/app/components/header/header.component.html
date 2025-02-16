@@ -1,0 +1,77 @@
+@if(isAuthenticated()){
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" routerLink="/">
+            <img src="images/logo.png" alt="Logo" class="navbar-logo">
+        </a>
+
+        <!-- Botón de toggler para móviles -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menú colapsable (solo para enlaces de navegación) -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
+                        Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/buscador-peliculas" routerLinkActive="active">
+                        Películas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/generos" routerLinkActive="active">
+                        Géneros
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Barra de búsqueda (fuera del menú colapsable) -->
+        <form [formGroup]="searchForm" (ngSubmit)="buscar()" class="d-flex search-form">
+            <input class="form-control search-input" type="search" formControlName="query"
+                placeholder="Buscar películas...">
+            <button class="btn btn-neon" type="submit">Buscar</button>
+        </form>
+
+        <!-- Dropdown de usuario (fuera del menú colapsable) -->
+        <div class="dropdown user-dropdown">
+            <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="userDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <img [src]="getUserAvatarPath()" alt="Avatar" class="avatar-img">
+                <span class="username">{{ getUsername() }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item" routerLink="/perfil">
+                        <i class="bi bi-person me-2"></i>Perfil
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <button class="dropdown-item text-danger" (click)="logout()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+} @else {
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" routerLink="/">
+            <img src="images/logo.png" alt="Logo" class="navbar-logo">
+        </a>
+    </div>
+</nav>
+}
