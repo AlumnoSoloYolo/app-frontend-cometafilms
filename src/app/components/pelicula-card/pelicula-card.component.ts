@@ -84,9 +84,9 @@ export class PeliculaCardComponent implements OnInit {
     event.stopPropagation();
 
     if (this.vista) {
-      this.removeFromVistas(); // Eliminar de "Vistas"
+      this.removeFromVistas();
     } else {
-      this.addToVistas(); // Agregar a "Vistas"
+      this.addToVistas();
     }
   }
 
@@ -94,9 +94,9 @@ export class PeliculaCardComponent implements OnInit {
     event.stopPropagation();
 
     if (this.pendiente) {
-      this.removeFromPendientes(); // Eliminar de "Pendientes"
+      this.removeFromPendientes();
     } else {
-      this.addToPendientes(); // Agregar a "Pendientes"
+      this.addToPendientes();
     }
   }
 
@@ -108,13 +108,13 @@ export class PeliculaCardComponent implements OnInit {
         const peliculasVistas = this.getPeliculasVistas();
         const peliculasPendientes = this.getPeliculasPendientes();
 
-        // Agregar a vistas si no está
+
         if (!peliculasVistas.includes(movieIdString)) {
           peliculasVistas.push(movieIdString);
           this.updatePeliculasVistas(peliculasVistas);
         }
 
-        // Eliminar de pendientes si está
+
         const indexPendiente = peliculasPendientes.indexOf(movieIdString);
         if (indexPendiente > -1) {
           peliculasPendientes.splice(indexPendiente, 1);
@@ -160,13 +160,13 @@ export class PeliculaCardComponent implements OnInit {
         const peliculasPendientes = this.getPeliculasPendientes();
         const peliculasVistas = this.getPeliculasVistas();
 
-        // Agregar a pendientes si no está
+
         if (!peliculasPendientes.includes(movieIdString)) {
           peliculasPendientes.push(movieIdString);
           this.updatePeliculasPendientes(peliculasPendientes);
         }
 
-        // Eliminar de vistas si está
+
         const indexVista = peliculasVistas.indexOf(movieIdString);
         if (indexVista > -1) {
           peliculasVistas.splice(indexVista, 1);

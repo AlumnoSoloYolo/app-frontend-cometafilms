@@ -152,7 +152,7 @@
                                         <small class="text-white">{{review.createdAt | date:'mediumDate'}}</small>
                                     </div>
                                 </div>
-                                <!-- Solo mostrar botones si la review es del usuario actual -->
+
                                 @if (!review.isExternal && reviewUsuarioActual?.movieId === review.movieId) {
 
 

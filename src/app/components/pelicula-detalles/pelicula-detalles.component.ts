@@ -126,36 +126,36 @@ export class PeliculaDetallesComponent implements OnInit {
   cargarReviews(movieId: string): void {
     this.cargandoReviews = true;
 
-    // Reseñas de TMDB
+
     const tmdbReviews = this.pelicula.reviews.results.map((review: any) => ({
       _id: review.id,
       movieId: this.pelicula.id,
       username: review.author_details.username || 'Usuario Anónimo',
-      avatar: this.getAvatarPath("avatar4"), // Usar el avatar de TMDB o uno por defecto
+      avatar: this.getAvatarPath("avatar4"),
       rating: review.author_details.rating,
       comment: review.content,
       createdAt: new Date(review.created_at),
       isExternal: true
     }));
 
-    // Reseñas de la base de datos
+
     this.userMovieService.getReviewsPelicula(movieId).subscribe({
       next: (data) => {
-        // Añadir el avatar a las reseñas de la base de datos
+
         const userReviews = data.reviews.map((review: any) => ({
           ...review,
           avatar: this.getAvatarPath(review.avatar || 'avatar5')
         }));
 
-        // Combinar reseñas de TMDB y la base de datos
+
         this.reviews = [...tmdbReviews, ...userReviews];
 
-        // Ordenar reseñas por fecha (más reciente primero)
+
         this.reviews.sort((a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
 
-        // Cargar la reseña del usuario actual
+
         this.userMovieService.getReviewsUsuario().subscribe({
           next: (userReviews) => {
             this.reviewUsuarioActual = userReviews.find(r => r.movieId === movieId);
@@ -168,7 +168,7 @@ export class PeliculaDetallesComponent implements OnInit {
         });
       },
       error: (error) => {
-        // Si hay un error al cargar las reseñas de la base de datos, usar solo las de TMDB
+
         this.reviews = tmdbReviews;
         console.error('Error al cargar reviews:', error);
         this.cargandoReviews = false;
@@ -190,26 +190,26 @@ export class PeliculaDetallesComponent implements OnInit {
     const reviewData = this.reviewForm.value;
 
     if (this.reviewUsuarioActual) {
-      // Actualizar la reseña existente
+
       this.userMovieService.updateReview(this.pelicula.id, reviewData).subscribe({
         next: (updatedReviewResponse) => {
           console.log('Respuesta de actualización:', updatedReviewResponse);
 
-          // Acceder a la reseña actualizada
+
           const updatedReview = updatedReviewResponse.review;
 
-          // Reemplazar la reseña antigua con la reseña actualizada en el array `reviews`
-          const index = this.reviews.findIndex(r => r._id === updatedReview._id);
+
+          const index = this.reviews.findIndex(review => review._id === updatedReview._id);
           if (index !== -1) {
-            this.reviews[index] = updatedReview; // Reemplazar la reseña existente
+            this.reviews[index] = updatedReview;
           } else {
-            this.reviews.unshift(updatedReview); // Agregar la reseña si no existe
+            this.reviews.unshift(updatedReview);
           }
 
           this.cargarReviews(this.pelicula.id);
           window.location.reload()
 
-          // Cerrar el formulario y resetear
+
           this.mostrarFormularioReview = false;
           this.reviewForm.reset({ rating: 0, comment: '' });
           this.reviewUsuarioActual = updatedReview;
@@ -217,16 +217,16 @@ export class PeliculaDetallesComponent implements OnInit {
         error: (error) => console.error('Error al actualizar review:', error)
       });
     } else {
-      // Añadir una nueva reseña
+
       this.userMovieService.addReview(this.pelicula.id, reviewData).subscribe({
         next: (newReview) => {
           // console.log('Nueva reseña:', newReview);
 
-          // Recargar las reseñas
+
           this.cargarReviews(this.pelicula.id);
           window.location.reload()
 
-          // Cerrar el formulario y resetear
+
           this.mostrarFormularioReview = false;
           this.reviewForm.reset({ rating: 0, comment: '' });
           this.reviewUsuarioActual = newReview;
@@ -268,7 +268,4 @@ export class PeliculaDetallesComponent implements OnInit {
   setRating(rating: number): void {
     this.reviewForm.patchValue({ rating });
   }
-
-
-
 }

@@ -219,12 +219,12 @@ export class BusquedaPeliculasComponent {
     return params;
   }
 
-  // Maneja los errores del formulario
+
   getErrorMessage(controlName: string): string {
     const control = this.searchForm.get(controlName);
     if (!control?.errors) return '';
 
-    // Manejamos cada tipo de error específicamente
+
     if (control.errors['required']) {
       return 'Este campo es obligatorio';
     }
@@ -251,7 +251,6 @@ export class BusquedaPeliculasComponent {
   }
 
 
-  // Carga más películas para el scroll infinito
   private cargarPeliculas() {
     this.cargando = true;
     this.paginaActual++;
@@ -281,13 +280,13 @@ export class BusquedaPeliculasComponent {
     return !!(control && control.errors && (control.dirty || control.touched));
   }
 
-  // Método para limpiar filtros
+
   limpiarFiltros() {
     this.searchForm.reset({ sortBy: 'popularity.desc' });
     this.buscar();
   }
 
-  // Método para volver arriba
+
   volverArriba() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

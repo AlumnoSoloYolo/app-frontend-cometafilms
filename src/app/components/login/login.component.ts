@@ -34,14 +34,14 @@ export class LoginComponent {
   getErrorMessage(field: string): string {
     const control = this.loginForm.get(field);
 
-    // Mensajes específicos por campo
+
     if (control?.errors) {
       if (control.errors['required']) {
         return 'Este campo es obligatorio';
       }
     }
 
-    // Mensajes globales específicos por campo
+
     if (field === 'email' && this.globalError) {
       return this.globalError;
     }
@@ -54,12 +54,10 @@ export class LoginComponent {
   }
 
   onLogin() {
-    // Resetear mensajes
+
     this.globalError = null;
     this.successMessage = null;
     this.showMessage = false;
-
-    // Resetear el estado del formulario para permitir nuevos envíos
     this.loginForm.enable();
 
     if (this.loginForm.invalid) {
@@ -72,27 +70,25 @@ export class LoginComponent {
 
     const { email, password } = this.loginForm.value;
 
-    // Deshabilitar el formulario durante la solicitud
     this.loginForm.disable();
 
     this.authService.login(email!, password!)
       .subscribe({
-        next: (response) => {
-          // Mostrar mensaje de éxito
+        next: () => {
           this.successMessage = '¡Inicio de sesión exitoso! Redirigiendo al inicio...';
           this.showMessage = true;
 
-          // Redirigir después de 3 segundos
+
           setTimeout(() => {
             this.showMessage = false;
             this.router.navigate(['/perfil']);
           }, 3000);
         },
         error: (error) => {
-          // Habilitar el formulario en caso de error
+
           this.loginForm.enable();
 
-          // Determinar el tipo de error
+
           if (error instanceof Error) {
             switch (error.message) {
               case 'INVALID_CREDENTIALS':
@@ -108,7 +104,6 @@ export class LoginComponent {
             this.globalError = 'Error desconocido. Inténtalo de nuevo más tarde.';
           }
 
-          // Marcar los campos como tocados para mostrar errores
           Object.keys(this.loginForm.controls).forEach(key => {
             const control = this.loginForm.get(key);
             control?.markAsTouched();

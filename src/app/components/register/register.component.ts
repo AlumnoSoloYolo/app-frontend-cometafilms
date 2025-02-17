@@ -107,14 +107,13 @@ export class RegisterComponent {
       return;
     }
 
-    // Deshabilitar el formulario para prevenir envíos múltiples
+
     this.registerForm.disable();
 
     const { username, email, password, avatar } = this.registerForm.value;
 
     this.authService.register(username!, email!, password!, avatar!)
       .pipe(
-        // Asegurarse de habilitar el formulario incluso si hay un error
         finalize(() => {
           this.registerForm.enable();
         })
@@ -132,16 +131,16 @@ export class RegisterComponent {
         error: (error) => {
           console.error('Error en el registro:', error);
 
-          // Resetear errores previos
+
           this.registerForm.get('username')?.setErrors(null);
           this.registerForm.get('email')?.setErrors(null);
 
-          // Obtener el mensaje de error
+
           const errorMessage = error.error?.message ||
             error.message ||
             'Hubo un problema en el servidor';
 
-          // Manejar errores específicos
+
           if (errorMessage.includes('Username')) {
             this.registerForm.get('username')?.setErrors({
               userExists: 'El nombre de usuario ya está en uso'
@@ -154,7 +153,7 @@ export class RegisterComponent {
             });
           }
 
-          // Mostrar mensaje de error
+
           this.mensajeExitoso = errorMessage;
           this.showMensajeExitoso = true;
 

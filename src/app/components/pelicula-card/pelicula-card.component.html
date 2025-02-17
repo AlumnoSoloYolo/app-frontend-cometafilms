@@ -1,7 +1,7 @@
 <div class="movie-card position-relative" [routerLink]="['/pelicula', pelicula.id]">
-    <!-- Botones de acción -->
+
     <div class="action-buttons">
-        <!-- Botón de Pendientes -->
+
         <button class="action-btn watchlist-btn" [ngClass]="{ 'active': pendiente }" (click)="togglePendiente($event)">
             <i class="bi" [ngClass]="{ 
                     'bi-bookmark-plus': !pendiente, 
@@ -9,7 +9,6 @@
                 }" [title]="pendiente ? 'Eliminar de pendientes' : 'Añadir a pendientes'"></i>
         </button>
 
-        <!-- Botón de Vistas -->
         <button class="action-btn watched-btn" [ngClass]="{ 'active': vista }" (click)="toggleVista($event)">
             <i class="bi" [ngClass]="{ 
                     'bi-eye': !vista, 

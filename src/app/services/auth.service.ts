@@ -24,7 +24,7 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<any>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
 
-    // La URL base de nuestro backend
+
     private apiUrl = environment.apiUrl + '/auth';
 
     constructor(private http: HttpClient) {
@@ -35,7 +35,7 @@ export class AuthService {
         }
     }
 
-    // Método para registrar un nuevo usuario
+
     register(
         username: string,
         email: string,
@@ -77,43 +77,41 @@ export class AuthService {
                 this.handleAuthSuccess(response);
             }),
             catchError(error => {
-                // Imprime el error completo para diagnóstico
+
                 console.error('Error completo de inicio de sesión:', error);
 
-                // Imprime detalles específicos del error
                 console.log('Detalles del error:', {
                     status: error.status,
                     message: error.error?.message,
                     error: error.error
                 });
 
-                // Manejo de diferentes tipos de errores
                 if (error.status === 401) {
-                    // Credenciales incorrectas
+
                     return throwError(() => new Error('INVALID_CREDENTIALS'));
                 } else if (error.status === 404) {
-                    // Usuario no encontrado
+
                     return throwError(() => new Error('USER_NOT_FOUND'));
                 } else {
-                    // Error genérico del servidor
+
                     return throwError(() => new Error('SERVER_ERROR'));
                 }
             })
         );
     }
-    // Método para cerrar sesión
+
     logout(): void {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         this.currentUserSubject.next(null);
     }
 
-    // Método para verificar si el usuario está autenticado
+
     isAuthenticated(): boolean {
         return !!this.getToken();
     }
 
-    // Método para obtener el token actual
+
     getToken(): string | null {
         return localStorage.getItem('token');
     }
@@ -121,10 +119,10 @@ export class AuthService {
     private handleAuthSuccess(response: any) {
         console.log('Respuesta completa del login:', response);
         if (response) {
-            // Guardar el token
+
             localStorage.setItem('token', response.token);
 
-            // Guardar usuario con toda su información
+
             const userToStore = {
                 id: response.user.id,
                 username: response.user.username,

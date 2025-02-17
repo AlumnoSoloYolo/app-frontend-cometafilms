@@ -1,4 +1,4 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
@@ -137,7 +137,6 @@ export class UserMovieService {
   }
 
 
-  // Eliminar una review
   deleteReview(movieId: string): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/user-movies/reviews/${movieId}`,
