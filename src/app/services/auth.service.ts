@@ -21,8 +21,8 @@ interface AuthResponse {
 })
 export class AuthService {
     // BehaviorSubject nos permite mantener el estado del usuario y notificar cambios
-    private currentUserSubject = new BehaviorSubject<any>(null);
-    public currentUser$ = this.currentUserSubject.asObservable();
+    public currentUserSubject = new BehaviorSubject<any>(null);
+    public currentUser = this.currentUserSubject.asObservable();
 
 
     private apiUrl = environment.apiUrl + '/auth';

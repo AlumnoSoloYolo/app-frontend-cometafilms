@@ -46,7 +46,9 @@ export class PeliculaCardComponent implements OnInit {
   }
 
   private checkEstados(): void {
+
     const movieIdString = this.pelicula.id.toString();
+
     this.vista = this.userProfile.pelisVistas.some((peli: any) => peli.movieId === movieIdString);
     this.pendiente = this.userProfile.pelisPendientes.some((peli: any) => peli.movieId === movieIdString);
   }
@@ -65,20 +67,22 @@ export class PeliculaCardComponent implements OnInit {
   toggleVista(event: Event): void {
     event.stopPropagation();
     this.vista ? this.removeFromVistas() : this.addToVistas();
+    this.checkEstados();
+
   }
 
   togglePendiente(event: Event): void {
     event.stopPropagation();
     this.pendiente ? this.removeFromPendientes() : this.addToPendientes();
+    this.checkEstados();
   }
 
   private addToVistas(): void {
     const movieIdString = this.pelicula.id.toString();
     this.userService.addPelisVistas(movieIdString).subscribe({
       next: () => {
-        this.vista = true;
-        this.pendiente = false;
-        this.peliculaVistaAgregada.emit(movieIdString);
+        this.cargarPerfilUsuario();
+        this.checkEstados();
       },
       error: (error) => console.error(`Error al añadir a vistas`, error)
     });
@@ -88,8 +92,8 @@ export class PeliculaCardComponent implements OnInit {
     const movieIdString = this.pelicula.id.toString();
     this.userService.removePelisVistas(movieIdString).subscribe({
       next: () => {
-        this.vista = false;
-        this.peliculaVistaEliminada.emit(movieIdString);
+        this.cargarPerfilUsuario();
+        this.checkEstados();
       },
       error: (error) => console.error(`Error al eliminar de vistas`, error)
     });
@@ -98,20 +102,17 @@ export class PeliculaCardComponent implements OnInit {
   private addToPendientes(): void {
     const movieIdString = this.pelicula.id.toString();
 
-
     this.userService.removePelisVistas(movieIdString).subscribe({
       next: () => {
-
         this.userService.addPelisPendientes(movieIdString).subscribe({
           next: () => {
-            this.pendiente = true;
-            this.vista = false;
-            this.peliculaPendienteAgregada.emit(movieIdString);
+            this.cargarPerfilUsuario();
+            this.checkEstados();
           },
           error: (error) => console.error(`Error al añadir a pendientes`, error)
         });
       },
-      error: (error) => console.error(`Error al eliminar de vistas`, error)
+      error: (error) => console.error(`Error al eliminar de vistas antes de añadir a pendientes`, error)
     });
   }
 
@@ -119,10 +120,12 @@ export class PeliculaCardComponent implements OnInit {
     const movieIdString = this.pelicula.id.toString();
     this.userService.removePelisPendientes(movieIdString).subscribe({
       next: () => {
-        this.pendiente = false;
-        this.peliculaPendienteEliminada.emit(movieIdString);
+        this.cargarPerfilUsuario();
+        this.checkEstados();
       },
       error: (error) => console.error(`Error al eliminar de pendientes`, error)
     });
   }
+
+
 }

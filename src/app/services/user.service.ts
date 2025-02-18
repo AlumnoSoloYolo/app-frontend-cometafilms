@@ -143,4 +143,10 @@ export class UserMovieService {
       this.getHeaders()
     );
   }
+
+
+  getUserId(): string | null {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    return user ? user.id : null;
+  }
 }

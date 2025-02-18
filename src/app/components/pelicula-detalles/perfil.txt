@@ -47,6 +47,7 @@ export class PerfilComponent implements OnInit {
   constructor(
     private userMovieService: UserMovieService,
     private movieService: PeliculasService,
+
   ) { }
 
   ngOnInit() {
@@ -68,6 +69,7 @@ export class PerfilComponent implements OnInit {
           pelisVistas: userData.pelisVistas || [],
           reviews: userData.reviews || [],
         };
+
 
         if (this.userProfile.pelisPendientes.length > 0) {
           this.loadPeliculasPendientes();
@@ -92,11 +94,13 @@ export class PerfilComponent implements OnInit {
       this.movieService.getDetallesPelicula(peli.movieId).subscribe({
         next: (movie) => {
           this.peliculasPendientes.push(movie);
+
         },
         error: (error) => console.error('Error al cargar detalles de película pendiente:', error)
       });
     });
   }
+
 
   loadPeliculasVistas() {
     if (!this.userProfile || !this.userProfile.pelisVistas) return;
@@ -112,6 +116,7 @@ export class PerfilComponent implements OnInit {
       });
     });
   }
+
 
   loadReviews() {
     this.userMovieService.getReviewsUsuario().subscribe({
@@ -155,62 +160,65 @@ export class PerfilComponent implements OnInit {
 
   onPeliculaVistaAgregada(movieId: string) {
     if (this.userProfile) {
+      const peliculaYaExiste = this.userProfile.pelisVistas.some(peli => peli.movieId === movieId);
 
-      this.userProfile.pelisVistas = [...this.userProfile.pelisVistas, { movieId, watchedAt: new Date() }];
+      if (!peliculaYaExiste) {
+        this.userProfile.pelisVistas = [...this.userProfile.pelisVistas, { movieId, watchedAt: new Date() }];
+        this.userProfile.pelisPendientes = this.userProfile.pelisPendientes.filter(peli => peli.movieId !== movieId);
 
-      this.userProfile.pelisPendientes = this.userProfile.pelisPendientes.filter(peli => peli.movieId !== movieId);
+        this.movieService.getDetallesPelicula(movieId).subscribe({
+          next: (movie) => {
+            if (!this.peliculasVistas.some(peli => peli.id.toString() === movieId)) {
+              this.peliculasVistas = [...this.peliculasVistas, movie];
+            }
+            this.peliculasPendientes = this.peliculasPendientes.filter(peli => peli.id.toString() !== movieId);
 
-
-      this.movieService.getDetallesPelicula(movieId).subscribe({
-        next: (movie) => {
-          this.peliculasVistas = [...this.peliculasVistas, movie];
-          this.peliculasPendientes = this.peliculasPendientes.filter(peli => peli.id.toString() !== movieId);
-        },
-        error: (error) => console.error('Error al cargar detalles de película vista:', error)
-      });
+          },
+          error: (error) => console.error('Error al cargar detalles de película vista:', error)
+        });
+      }
     }
   }
 
-  onPeliculaPendienteAgregada(movieId: string) {
-    if (this.userProfile) {
-
-      this.userProfile.pelisPendientes = [...this.userProfile.pelisPendientes, { movieId, addedAt: new Date() }];
-
-      this.userProfile.pelisVistas = this.userProfile.pelisVistas.filter(peli => peli.movieId !== movieId);
-
-
-      this.movieService.getDetallesPelicula(movieId).subscribe({
-        next: (movie) => {
-
-          this.peliculasVistas = this.peliculasVistas.filter(peli => peli.id.toString() !== movieId);
-
-          if (!this.peliculasPendientes.some(peli => peli.id.toString() === movieId)) {
-            this.peliculasPendientes = [...this.peliculasPendientes, movie];
-          }
-        },
-        error: (error) => console.error('Error al cargar detalles de película pendiente:', error)
-      });
-    }
-  }
 
   onPeliculaVistaEliminada(movieId: string) {
     if (this.userProfile) {
-
       this.userProfile.pelisVistas = this.userProfile.pelisVistas.filter(peli => peli.movieId !== movieId);
-
       this.peliculasVistas = this.peliculasVistas.filter(peli => peli.id.toString() !== movieId);
+    }
+  }
+
+
+  onPeliculaPendienteAgregada(movieId: string) {
+    if (this.userProfile) {
+      const peliculaYaEnPendientes = this.userProfile.pelisPendientes.some(peli => peli.movieId === movieId);
+
+      if (!peliculaYaEnPendientes) {
+        this.userProfile.pelisPendientes = [...this.userProfile.pelisPendientes, { movieId, addedAt: new Date() }];
+        this.userProfile.pelisVistas = this.userProfile.pelisVistas.filter(peli => peli.movieId !== movieId);
+
+        this.movieService.getDetallesPelicula(movieId).subscribe({
+          next: (movie) => {
+            if (!this.peliculasPendientes.some(peli => peli.id.toString() === movieId)) {
+              this.peliculasPendientes = [...this.peliculasPendientes, movie];
+            }
+            this.peliculasVistas = this.peliculasVistas.filter(peli => peli.id.toString() !== movieId);
+          },
+          error: (error) => console.error('Error al cargar detalles de película pendiente:', error)
+        });
+      }
     }
   }
 
 
   onPeliculaPendienteEliminada(movieId: string) {
     if (this.userProfile) {
-      // Eliminar de pelisPendientes
       this.userProfile.pelisPendientes = this.userProfile.pelisPendientes.filter(peli => peli.movieId !== movieId);
-      // Actualizar lista de películas
       this.peliculasPendientes = this.peliculasPendientes.filter(peli => peli.id.toString() !== movieId);
     }
   }
+
+
 
   scrollSection(sectionId: string, direction: 'left' | 'right'): void {
     const container = document.getElementById(sectionId);
