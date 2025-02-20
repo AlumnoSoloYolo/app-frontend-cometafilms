@@ -87,15 +87,14 @@
 
             </div>
 
-            <!-- Formulario para añadir/editar review -->
-            <div class="modal-overlay" *ngIf="mostrarFormularioReview" (click)="mostrarFormularioReview = false"></div>
+            <div class="modal-overlay" *ngIf="mostrarFormularioReview"></div>
             <div class="modal-container" *ngIf="mostrarFormularioReview">
                 <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="cyber-form">
                     <h3 class="mb-3">{{ reviewUsuarioActual ? 'Editar reseña' : 'Escribir reseña' }}</h3>
 
-                    <div class="mb-3">
-                        <label class="d-block mb-2">Puntuación</label>
-                        <div class="rating-container d-flex align-items-center gap-2">
+                    <div class="form-group">
+                        <label>Puntuación</label>
+                        <div class="rating-container">
                             <button type="button" *ngFor="let star of [1,2,3,4,5,6,7,8,9,10]" (click)="setRating(star)"
                                 [class.active]="star <= reviewForm.get('rating')?.value" class="rating-star">
                                 ★
@@ -104,18 +103,17 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="d-block mb-2">Comentario</label>
-                        <textarea formControlName="comment" class="form-control" rows="4"
-                            placeholder="Escribe tu opinión sobre la película...">
-                        </textarea>
+                    <div class="form-group">
+                        <label>Comentario</label>
+                        <textarea formControlName="comment" rows="4"
+                            placeholder="Escribe tu opinión sobre la película..."></textarea>
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary" [disabled]="!reviewForm.valid">
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary m-1" [disabled]="!reviewForm.valid">
                             {{ reviewUsuarioActual ? 'Actualizar' : 'Publicar' }}
                         </button>
-                        <button type="button" (click)="mostrarFormularioReview = false" class="btn btn-secondary">
+                        <button type="button" class="btn btn-secondary m-1" (click)="mostrarFormularioReview = false">
                             Cancelar
                         </button>
                     </div>

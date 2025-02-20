@@ -164,6 +164,11 @@
   font-size: 2.1rem;
 }
 
+.button-container{
+  display: flex;
+  margin: 8px;
+}
+
 .review-actions button{
   width: 35px;
   height: 35px;
@@ -559,7 +564,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* Centrar el modal */
-  background-color: #1e1e1e; /* Color de fondo del modal */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
@@ -595,4 +599,192 @@
 
 .btn-secondary:hover {
   background-color: #5a6268;
+}
+
+/* Modal Container Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 998;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Form Styles */
+.cyber-form {
+    background: rgba(10, 10, 10, 0.8);
+    padding: 2rem;
+    border-radius: 15px;
+    position: relative;
+    z-index: 1;
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.cyber-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    padding: 2px;
+    background: linear-gradient(45deg, rgb(14, 64, 64), rgb(211, 20, 211));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+/* Input and Textarea Styles */
+.cyber-form textarea,
+.cyber-form input {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(211, 20, 211, 0.3);
+    border-radius: 8px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.cyber-form textarea:focus,
+.cyber-form input:focus {
+    outline: none;
+    border-color: rgb(211, 20, 211);
+    box-shadow: 0 0 10px rgba(211, 20, 211, 0.3);
+}
+
+/* Rating Stars Styles */
+.rating-container {
+    margin-bottom: 1rem;
+}
+
+.rating-star {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: rgba(211, 20, 211, 0.3);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0 2px;
+}
+
+.rating-star.active {
+    color: rgb(211, 20, 211);
+    text-shadow: 0 0 10px rgba(211, 20, 211, 0.5);
+}
+
+.rating-star:hover {
+    color: rgb(211, 20, 211);
+    transform: scale(1.1);
+}
+
+/* Button Container */
+.d-flex.gap-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Button Styles */
+.cyber-form button[type="submit"],
+.cyber-form button.btn-primary,
+.cyber-form button.btn-secondary {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cyber-form button[type="submit"],
+.cyber-form button.btn-primary {
+    background: linear-gradient(45deg, rgb(14, 64, 64), rgb(211, 20, 211));
+    color: white;
+    border: none;
+}
+
+.cyber-form button[type="submit"]:hover:not(:disabled),
+.cyber-form button.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(211, 20, 211, 0.3);
+}
+
+.cyber-form button[type="submit"]:disabled,
+.cyber-form button.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #666;
+}
+
+.cyber-form button.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(211, 20, 211, 0.3);
+}
+
+.cyber-form button.btn-secondary:hover {
+    background: rgba(211, 20, 211, 0.1);
+    border-color: rgb(211, 20, 211);
+    transform: translateY(-2px);
+}
+
+/* Label Styles */
+.cyber-form label {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Error Styles */
+.cyber-form .error-message {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .modal-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .cyber-form {
+        padding: 1.5rem;
+    }
+    
+    .cyber-form textarea,
+    .cyber-form input {
+        padding: 0.6rem;
+    }
+    
+    .cyber-form button {
+        padding: 0.8rem;
+    }
+    
+    .rating-star {
+        font-size: 1.2rem;
+    }
 }
