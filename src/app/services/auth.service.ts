@@ -6,13 +6,14 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environments';
 
 
-// Interfaz para tipar la respuesta de autenticación
+
 interface AuthResponse {
     token: string;
     user: {
         id: string;
         username: string;
         email: string;
+        avatar: string
     };
 }
 
@@ -20,7 +21,7 @@ interface AuthResponse {
     providedIn: 'root'
 })
 export class AuthService {
-    // BehaviorSubject nos permite mantener el estado del usuario y notificar cambios
+
     public currentUserSubject = new BehaviorSubject<any>(null);
     public currentUser = this.currentUserSubject.asObservable();
 
@@ -28,7 +29,7 @@ export class AuthService {
     private apiUrl = environment.apiUrl + '/auth';
 
     constructor(private http: HttpClient) {
-        // Al iniciar el servicio, verificamos si hay un usuario guardado
+
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             this.currentUserSubject.next(JSON.parse(storedUser));
@@ -42,11 +43,6 @@ export class AuthService {
         password: string,
         avatar: string = 'avatar1'
     ): Observable<AuthResponse> {
-        console.log('Enviando datos de registro:', {
-            username,
-            email,
-            avatar
-        });
 
         return this.http.post<AuthResponse>(`${this.apiUrl}/register`, {
             username,
@@ -55,50 +51,60 @@ export class AuthService {
             avatar
         }).pipe(
             tap(response => {
-                console.log('Respuesta de registro:', response);
-                this.handleAuthSuccess(response);
+                // console.log('Respuesta de registro:', response);
+                this.saveAuth(response);
             }),
             catchError(error => {
-                console.error('Error completo en registro:', error);
+                // console.error('Error completo en registro:', error);
                 return throwError(() => error);
             })
         );
     }
 
     login(email: string, password: string): Observable<AuthResponse> {
-        console.log('Intentando login con:', { email, password });
 
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
             email,
             password
         }).pipe(
             tap(response => {
-                console.log('Respuesta del servidor:', response);
-                this.handleAuthSuccess(response);
+                this.saveAuth(response);
             }),
             catchError(error => {
-
-                console.error('Error completo de inicio de sesión:', error);
-
-                console.log('Detalles del error:', {
-                    status: error.status,
-                    message: error.error?.message,
-                    error: error.error
-                });
-
+                console.error('Error en login:', error);
                 if (error.status === 401) {
-
                     return throwError(() => new Error('INVALID_CREDENTIALS'));
                 } else if (error.status === 404) {
-
                     return throwError(() => new Error('USER_NOT_FOUND'));
                 } else {
-
                     return throwError(() => new Error('SERVER_ERROR'));
                 }
             })
         );
     }
+
+    private saveAuth(response: any) {
+
+        if (response && response.token) {
+            localStorage.setItem('token', response.token);
+
+            const userData = response.user;
+
+            const userToStore = {
+                id: userData.id,
+                username: userData.username,
+                email: userData.email,
+                avatar: userData.avatar || 'default-avatar'
+            };
+
+            localStorage.setItem('user', JSON.stringify(userToStore));
+
+            this.currentUserSubject.next(userToStore);
+        } else {
+            console.error('Respuesta inválida en saveAuth:', response);
+        }
+    }
+
 
     logout(): void {
         localStorage.removeItem('token');
@@ -107,35 +113,15 @@ export class AuthService {
     }
 
 
-    isAuthenticated(): boolean {
-        return !!this.getToken();
-    }
-
-
     getToken(): string | null {
         return localStorage.getItem('token');
     }
 
-    private handleAuthSuccess(response: any) {
-        console.log('Respuesta completa del login:', response);
-        if (response) {
 
-            localStorage.setItem('token', response.token);
-
-
-            const userToStore = {
-                id: response.user.id,
-                username: response.user.username,
-                email: response.user.email,
-                avatar: response.user.avatar,
-                createdAt: response.user.createdAt,
-                pelisPendientes: response.user.pelisPendientes || [],
-                pelisVistas: response.user.pelisVistas || [],
-                reviews: response.user.reviews || []
-            };
-
-            console.log('Usuario a guardar en localStorage:', userToStore);
-            localStorage.setItem('user', JSON.stringify(userToStore));
-        }
+    isAuthenticated(): boolean {
+        return this.getToken() !== null;
     }
+
+
+
 }

@@ -568,13 +568,14 @@
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   z-index: 9999; /* Asegura que esté por encima de todo */
-  width: 90%;
-  max-width: 500px; /* Ancho máximo del modal */
+  width: 100%;
+  max-width: 750px; /* Ancho máximo del modal */
 }
 
 /* Estilos para el formulario dentro del modal */
 .cyber-form {
   color: #fff;
+  width: 100%;
 }
 
 /* Estilos para los botones de calificación */
@@ -766,10 +767,6 @@
 
 /* Responsive Styles */
 @media (max-width: 600px) {
-    .modal-container {
-        width: 95%;
-        margin: 20px;
-    }
     
     .cyber-form {
         padding: 1.5rem;
@@ -788,3 +785,5 @@
         font-size: 1.2rem;
     }
 }
+
+

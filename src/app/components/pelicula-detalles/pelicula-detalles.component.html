@@ -87,8 +87,9 @@
 
             </div>
 
-            <div class="modal-overlay" *ngIf="mostrarFormularioReview"></div>
-            <div class="modal-container" *ngIf="mostrarFormularioReview">
+            @if(mostrarFormularioReview){
+            <div class="modal-overlay"></div>
+            <div class="modal-container">
                 <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="cyber-form">
                     <h3 class="mb-3">{{ reviewUsuarioActual ? 'Editar reseña' : 'Escribir reseña' }}</h3>
 
@@ -119,6 +120,8 @@
                     </div>
                 </form>
             </div>
+            }
+
 
             <!-- Lista de reviews -->
             <div class="reviews-scroll-container">
@@ -151,8 +154,7 @@
                                     </div>
                                 </div>
 
-                                @if (!review.isExternal && reviewUsuarioActual?.movieId === review.movieId) {
-
+                                @if (!review.isExternal && isCurrentUserReview(review)) {
 
                                 <div class="review-actions">
                                     <button (click)="editarReview()" class="btn btn-link">

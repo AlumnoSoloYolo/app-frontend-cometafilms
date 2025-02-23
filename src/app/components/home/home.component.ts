@@ -126,22 +126,20 @@ export class HomeComponent implements OnInit {
     const container = document.getElementById(sectionId);
     if (!container) return;
 
-    const scrollContent = container.querySelector('.movie-scroll-content') as HTMLElement;
-    if (!scrollContent) return;
+    const scrollContenido = container.querySelector('.movie-scroll-content');
+    if (!scrollContenido) return;
 
-    const itemWidth = scrollContent.querySelector('.movie-scroll-item')?.clientWidth || 300; // Ancho de cada tarjeta
-    const scrollAmount = itemWidth * 2; // Desplazamiento igual al ancho de una tarjeta
-    const currentScroll = scrollContent.scrollLeft; // Posición actual del scroll
-    const totalWidth = scrollContent.scrollWidth; // Ancho total del contenido
-    const visibleWidth = scrollContent.clientWidth; // Ancho visible del contenedor
+    const itemAncho = scrollContenido.querySelector('.movie-scroll-item')?.clientWidth || 300;
+    const scrollCantidad = itemAncho * 2;
+    const scrollActual = scrollContenido.scrollLeft;
 
     let newScroll = direction === 'right'
-      ? Math.min(currentScroll + scrollAmount, totalWidth - visibleWidth) // Desplazar a la derecha
-      : Math.max(currentScroll - scrollAmount, 0); // Desplazar a la izquierda
+      ? scrollActual + scrollCantidad
+      : scrollActual - scrollCantidad;
 
-    scrollContent.scrollTo({
+    scrollContenido.scrollTo({
       left: newScroll,
-      behavior: 'smooth' // Desplazamiento suave
+      behavior: 'smooth'
     });
   }
 

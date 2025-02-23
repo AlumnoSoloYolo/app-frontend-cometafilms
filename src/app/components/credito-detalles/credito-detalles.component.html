@@ -59,8 +59,37 @@
                     <div class="movie-scroll-item">
                         <app-pelicula-card [pelicula]="pelicula"></app-pelicula-card>
                         <div class="role-info mt-1">
-                            <span class="character">interpretando a: {{pelicula.character || 'Sin personaje
-                                especificado'}}</span>
+                            <span class="character">interpretando a: {{pelicula.character}}</span>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            }
+
+            @if (person.known_for_department !== 'Acting' && person.movie_credits?.crew?.length) {
+            <div class="section-header">
+                <div class="section-navigation">
+                    <button class="scroll-btn" (click)="scrollSection('crewSection', 'left')">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="scroll-btn" (click)="scrollSection('crewSection', 'right')">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="crewSection" class="movie-scroll-container">
+                <div class="movie-scroll-content">
+                    @for (pelicula of person.movie_credits.crew; track pelicula.id) {
+                    <div class="movie-scroll-item">
+                        <app-pelicula-card [pelicula]="pelicula"></app-pelicula-card>
+                        <div class="role-info mt-1">
+                            <span class="job-title">{{pelicula.job}}</span>
+                            @if (pelicula.department !== person.known_for_department) {
+                            <span class="department">Departamento: {{pelicula.department}}</span>
+                            }
                         </div>
                     </div>
                     }
@@ -69,6 +98,4 @@
             }
         </div>
     </div>
-
-
 </div>

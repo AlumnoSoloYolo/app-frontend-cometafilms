@@ -31,12 +31,13 @@ interface ReviewsPeli {
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserMovieService {
+
   private apiUrl = environment.apiUrl;
 
 
   constructor(private http: HttpClient) { }
-
 
   private getToken(): string | null {
     return localStorage.getItem('token');
@@ -145,8 +146,4 @@ export class UserMovieService {
   }
 
 
-  getUserId(): string | null {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    return user ? user.id : null;
-  }
 }

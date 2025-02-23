@@ -4,6 +4,7 @@
     </div>
 
     @if (showMensajeExitoso) {
+    <div class="overlay"></div>
     <div [class]="registerForm.get('username')?.hasError('userExists') 
             ? 'alert alert-danger' 
             : 'alert alert-success'">

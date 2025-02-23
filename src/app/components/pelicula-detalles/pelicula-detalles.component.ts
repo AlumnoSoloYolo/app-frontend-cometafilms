@@ -7,6 +7,7 @@ import { PeliculasService } from '../../services/peliculas.service';
 import { UserMovieService } from '../../services/user.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PeliculaCardComponent } from '../pelicula-card/pelicula-card.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-pelicula-detalles',
@@ -29,6 +30,7 @@ export class PeliculaDetallesComponent implements OnInit {
   reviewUsuarioActual: any = null;
   cargandoReviews = false;
   reviewForm: FormGroup;
+  currentUser: any;
 
   constructor(
     private router: ActivatedRoute,
@@ -36,19 +38,27 @@ export class PeliculaDetallesComponent implements OnInit {
     private userMovieService: UserMovieService,
     private sanitizer: DomSanitizer,
     private fb: FormBuilder,
+    private authService: AuthService
   ) {
+
+
+    this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+    });
+
+
+    this.reviewForm = this.fb.group({
+      rating: [0, [Validators.required, Validators.min(1), Validators.max(10)]],
+      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(800)]]
+    });
+
+
     window.scrollTo({
       top: -100,
       left: 0,
       behavior: 'smooth'
     });
-    this.reviewForm = this.fb.group({
-      rating: [0, [Validators.required, Validators.min(1), Validators.max(10)]],
-      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
-    });
   }
-
-
 
   ngOnInit(): void {
     this.router.params.subscribe(params => {
@@ -61,6 +71,11 @@ export class PeliculaDetallesComponent implements OnInit {
         behavior: 'smooth'
       });
     });
+  }
+
+
+  isCurrentUserReview(review: any): boolean {
+    return this.currentUser?.id === review.userId;
   }
 
   cargarDetallesPelicula(id: string): void {
@@ -103,25 +118,22 @@ export class PeliculaDetallesComponent implements OnInit {
     const container = document.getElementById(sectionId);
     if (!container) return;
 
-    const scrollContent = container.querySelector('.movie-scroll-content');
-    if (!scrollContent) return;
+    const scrollContenido = container.querySelector('.movie-scroll-content');
+    if (!scrollContenido) return;
 
-    const itemWidth = scrollContent.querySelector('.movie-scroll-item')?.clientWidth || 300;
-    const scrollAmount = itemWidth * 2;
-    const currentScroll = scrollContent.scrollLeft;
-    const totalWidth = scrollContent.scrollWidth;
-    const visibleWidth = scrollContent.clientWidth;
+    const itemAncho = scrollContenido.querySelector('.movie-scroll-item')?.clientWidth || 300;
+    const scrollCantidad = itemAncho * 2;
+    const scrollActual = scrollContenido.scrollLeft;
 
     let newScroll = direction === 'right'
-      ? Math.min(currentScroll + scrollAmount, totalWidth - visibleWidth)
-      : Math.max(currentScroll - scrollAmount, 0);
+      ? Math.min(scrollActual + scrollCantidad)
+      : Math.max(scrollActual - scrollCantidad);
 
-    scrollContent.scrollTo({
+    scrollContenido.scrollTo({
       left: newScroll,
       behavior: 'smooth'
     });
   }
-
 
   cargarReviews(movieId: string): void {
     this.cargandoReviews = true;
@@ -220,7 +232,6 @@ export class PeliculaDetallesComponent implements OnInit {
 
       this.userMovieService.addReview(this.pelicula.id, reviewData).subscribe({
         next: (newReview) => {
-          // console.log('Nueva reseña:', newReview);
 
 
           this.cargarReviews(this.pelicula.id);

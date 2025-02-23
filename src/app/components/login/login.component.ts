@@ -75,7 +75,7 @@ export class LoginComponent {
     this.authService.login(email!, password!)
       .subscribe({
         next: () => {
-          this.successMessage = '¡Inicio de sesión exitoso! Redirigiendo al inicio...';
+          this.successMessage = '¡Bienvenid@!';
           this.showMessage = true;
 
 
@@ -86,13 +86,10 @@ export class LoginComponent {
         },
         error: (error) => {
 
-          this.loginForm.enable();
-
-
           if (error instanceof Error) {
             switch (error.message) {
               case 'INVALID_CREDENTIALS':
-                this.globalError = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+                this.globalError = 'contraseña incorrecta';
                 break;
               case 'USER_NOT_FOUND':
                 this.globalError = 'No se encontró un usuario con este email.';
@@ -104,10 +101,18 @@ export class LoginComponent {
             this.globalError = 'Error desconocido. Inténtalo de nuevo más tarde.';
           }
 
+          this.showMessage = true;
+
+          setTimeout(() => {
+            this.showMessage = false;
+            this.loginForm.enable();
+          }, 1000);
+
           Object.keys(this.loginForm.controls).forEach(key => {
             const control = this.loginForm.get(key);
             control?.markAsTouched();
           });
+
         }
       });
   }

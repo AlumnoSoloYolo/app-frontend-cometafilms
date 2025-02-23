@@ -56,8 +56,8 @@ export class PerfilComponent implements OnInit {
 
   loadUserProfile() {
     this.userMovieService.getUserPerfil().subscribe({
+
       next: (userData) => {
-        console.log('Datos recibidos del servidor:', userData);
 
         this.userProfile = {
           username: userData.username,
@@ -88,7 +88,7 @@ export class PerfilComponent implements OnInit {
 
     this.peliculasPendientes = [];
 
-    this.userProfile.pelisPendientes.forEach((peli) => {
+    this.userProfile.pelisPendientes.forEach(peli => {
       this.movieService.getDetallesPelicula(peli.movieId).subscribe({
         next: (movie) => {
           this.peliculasPendientes.push(movie);
@@ -103,7 +103,7 @@ export class PerfilComponent implements OnInit {
 
     this.peliculasVistas = [];
 
-    this.userProfile.pelisVistas.forEach((peli) => {
+    this.userProfile.pelisVistas.forEach(peli => {
       this.movieService.getDetallesPelicula(peli.movieId).subscribe({
         next: (movie) => {
           this.peliculasVistas.push(movie);
@@ -205,9 +205,9 @@ export class PerfilComponent implements OnInit {
 
   onPeliculaPendienteEliminada(movieId: string) {
     if (this.userProfile) {
-      // Eliminar de pelisPendientes
+
       this.userProfile.pelisPendientes = this.userProfile.pelisPendientes.filter(peli => peli.movieId !== movieId);
-      // Actualizar lista de películas
+
       this.peliculasPendientes = this.peliculasPendientes.filter(peli => peli.id.toString() !== movieId);
     }
   }
@@ -216,20 +216,18 @@ export class PerfilComponent implements OnInit {
     const container = document.getElementById(sectionId);
     if (!container) return;
 
-    const scrollContent = container.querySelector('.movie-scroll-content') as HTMLElement;
-    if (!scrollContent) return;
+    const scrollContenido = container.querySelector('.movie-scroll-content');
+    if (!scrollContenido) return;
 
-    const itemWidth = scrollContent.querySelector('.movie-scroll-item')?.clientWidth || 300;
-    const scrollAmount = itemWidth * 2;
-    const currentScroll = scrollContent.scrollLeft;
-    const totalWidth = scrollContent.scrollWidth;
-    const visibleWidth = scrollContent.clientWidth;
+    const itemAncho = scrollContenido.querySelector('.movie-scroll-item')?.clientWidth || 300;
+    const scrollCantidad = itemAncho * 2;
+    const scrollActual = scrollContenido.scrollLeft;
 
     let newScroll = direction === 'right'
-      ? Math.min(currentScroll + scrollAmount, totalWidth - visibleWidth)
-      : Math.max(currentScroll - scrollAmount, 0);
+      ? scrollActual + scrollCantidad
+      : scrollActual - scrollCantidad;
 
-    scrollContent.scrollTo({
+    scrollContenido.scrollTo({
       left: newScroll,
       behavior: 'smooth'
     });

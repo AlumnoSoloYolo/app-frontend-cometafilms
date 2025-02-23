@@ -71,12 +71,12 @@ export class RegisterComponent {
       if (control.errors['required']) return 'Este campo es obligatorio';
       if (control.errors['minlength']) return 'Longitud mínima no alcanzada';
 
-      // Errores específicos de username
+
       if (control.errors['userExists']) {
         return control.errors['userExists'];
       }
 
-      // Errores específicos de email
+
       if (control.errors['emailExists']) {
         return control.errors['emailExists'];
       }
@@ -107,7 +107,6 @@ export class RegisterComponent {
       return;
     }
 
-
     this.registerForm.disable();
 
     const { username, email, password, avatar } = this.registerForm.value;
@@ -120,7 +119,7 @@ export class RegisterComponent {
       )
       .subscribe({
         next: (response) => {
-          this.mensajeExitoso = `¡Registro exitoso! Bienvenido, ${username}. Serás redirigido al login.`;
+          this.mensajeExitoso = `¡Registro exitoso! Bienvenid@, ${username}.`;
           this.showMensajeExitoso = true;
 
           setTimeout(() => {
@@ -131,36 +130,13 @@ export class RegisterComponent {
         error: (error) => {
           console.error('Error en el registro:', error);
 
-
-          this.registerForm.get('username')?.setErrors(null);
-          this.registerForm.get('email')?.setErrors(null);
-
-
-          const errorMessage = error.error?.message ||
-            error.message ||
-            'Hubo un problema en el servidor';
-
-
-          if (errorMessage.includes('Username')) {
-            this.registerForm.get('username')?.setErrors({
-              userExists: 'El nombre de usuario ya está en uso'
-            });
-          }
-
-          if (errorMessage.includes('Email')) {
-            this.registerForm.get('email')?.setErrors({
-              emailExists: 'El correo electrónico ya está registrado'
-            });
-          }
-
-
-          this.mensajeExitoso = errorMessage;
+          this.mensajeExitoso = "Usuario y/o correo en uso"
           this.showMensajeExitoso = true;
 
           setTimeout(() => {
             this.showMensajeExitoso = false;
 
-          }, 3000);
+          }, 1500);
         }
       });
   }

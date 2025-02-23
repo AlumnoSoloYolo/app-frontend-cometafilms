@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,6 @@ import { AbstractControl } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms';
 
 
-// Definimos la interfaz para la respuesta de la API
 interface MovieResponse {
   results: any[];
   total_results: number;
@@ -27,10 +26,8 @@ interface MovieResponse {
   styleUrl: './busqueda-peliculas.component.css'
 })
 export class BusquedaPeliculasComponent {
-  // Declaración del formulario
-  searchForm: FormGroup;
 
-  // Variables de estado
+  searchForm: FormGroup;
   peliculas: any[] = [];
   generos: any[] = [];
   cargando = false;
@@ -39,8 +36,6 @@ export class BusquedaPeliculasComponent {
   resultadosTotales = 0;
   mostrarBotonSubir = false;
 
-  // Opciones para los selectores
-  yearOptions = this.opcionesAnio();
   sortOptions = [
     { value: 'popularity.desc', label: 'Popularidad (Mayor a menor)' },
     { value: 'popularity.asc', label: 'Popularidad (Menor a mayor)' },
@@ -57,7 +52,7 @@ export class BusquedaPeliculasComponent {
     private pelisService: PeliculasService,
     private route: ActivatedRoute
   ) {
-    // inicializar el formulario usando FormBuilder
+
 
     this.searchForm = this.fb.group({
       query: ['', [
@@ -99,7 +94,7 @@ export class BusquedaPeliculasComponent {
   }
 
 
-  // Validador personalizado para el rango de valoración
+
   private validarRatingRange(group: FormGroup) {
     const min = group.get('minRating')?.value;
     const max = group.get('maxRating')?.value;
@@ -107,14 +102,7 @@ export class BusquedaPeliculasComponent {
       { ratingRange: true } : null;
   }
 
-  // Generador de opciones de años
-  private opcionesAnio(): number[] {
-    const currentYear = new Date().getFullYear();
-    return Array.from(
-      { length: currentYear - 1900 + 2 },
-      (_, i) => currentYear + 1 - i
-    );
-  }
+
 
 
   ngOnInit() {
@@ -123,15 +111,14 @@ export class BusquedaPeliculasComponent {
     this.cargarPeliculas();
   }
 
-  // Método para cargar datos iniciales
+
   private cargarDatosIniciales() {
-    // Cargamos los géneros
+
     this.pelisService.getGeneros().subscribe({
       next: (response) => this.generos = response.genres,
       error: (error) => console.error('Error cargando géneros:', error)
     });
 
-    // Verificamos si hay una búsqueda en la URL
     this.route.queryParams.subscribe(params => {
       if (params['query']) {
         this.searchForm.patchValue({ query: params['query'] });
@@ -140,7 +127,7 @@ export class BusquedaPeliculasComponent {
     });
   }
 
-  // Configuración de la búsqueda automática
+
   private configurarBusquedaAutomatica() {
     this.searchForm.valueChanges.pipe(
       debounceTime(500),
@@ -152,7 +139,7 @@ export class BusquedaPeliculasComponent {
     });
   }
 
-  // Método principal de búsqueda
+
   buscar() {
     if (this.searchForm.invalid) return;
 
@@ -163,30 +150,30 @@ export class BusquedaPeliculasComponent {
     this.realizarBusqueda();
   }
 
-  // Método para cargar más películas (scroll infinito)
+
   @HostListener('window:scroll')
   manejarScroll() {
     const estaEnElFondo = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
 
     if (!this.cargando && this.hayMasPaginas && estaEnElFondo) {
       this.paginaActual++;
-      this.realizarBusqueda(true); // true indica que es carga adicional
+      this.realizarBusqueda(true);
     }
 
     this.mostrarBotonSubir = window.pageYOffset > 300;
   }
 
-  // Método que realiza la petición a la API
+
   private realizarBusqueda(esScrollInfinito: boolean = false) {
     const params = this.prepararParametros();
 
     this.pelisService.busquedaAvanzadaPeliculas(params).subscribe({
       next: (response: MovieResponse) => {
         if (esScrollInfinito) {
-          // Agregamos las nuevas películas a las existentes
+
           this.peliculas = [...this.peliculas, ...response.results];
         } else {
-          // Reemplazamos las películas existentes
+
           this.peliculas = response.results;
         }
 
@@ -201,7 +188,7 @@ export class BusquedaPeliculasComponent {
     });
   }
 
-  // Prepara los parámetros de búsqueda
+
   private prepararParametros() {
     const formValue = this.searchForm.value;
     const params: any = {
@@ -209,7 +196,6 @@ export class BusquedaPeliculasComponent {
       sortBy: formValue.sortBy || 'popularity.desc'
     };
 
-    // Solo añadimos los parámetros que tienen valor
     if (formValue.query?.trim()) params.query = formValue.query.trim();
     if (formValue.year) params.year = formValue.year;
     if (formValue.genres?.length) params.genreIds = formValue.genres.filter(Boolean);
@@ -274,7 +260,7 @@ export class BusquedaPeliculasComponent {
     });
   }
 
-  // Verifica si un control tiene errores
+
   hasError(controlName: string): boolean {
     const control = this.searchForm.get(controlName);
     return !!(control && control.errors && (control.dirty || control.touched));

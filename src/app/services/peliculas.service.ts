@@ -61,7 +61,6 @@ export class PeliculasService {
     });
   }
 
-
   busquedaAvanzadaPeliculas(params: {
     query?: string,
     year?: number,
@@ -71,12 +70,9 @@ export class PeliculasService {
     maxRating?: number,
     page?: number
   }): Observable<any> {
-    const searchParams: any = {
-      include_adult: false,
-      page: params.page || 1
-    };
 
-    const endpoint = '/discover/movie';
+    const searchParams: any = { page: params.page || 1, include_adult: false };
+
 
     if (params.query) {
       searchParams.with_text_query = params.query;
@@ -102,7 +98,7 @@ export class PeliculasService {
       searchParams['vote_average.lte'] = params.maxRating;
     }
 
-    return this.http.get(`${this.baseUrl}${endpoint}`, {
+    return this.http.get(`${this.baseUrl}/discover/movie`, {
       headers: this.headers,
       params: searchParams
     });

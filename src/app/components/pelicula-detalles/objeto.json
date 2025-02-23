@@ -1,0 +1,46 @@
+{
+    "_id": "67aa90b6311fe11d8c747938",
+    "username": "sandia",
+    "email": "sandia@gmail.com",
+    "avatar": "avatar4",
+    "reviews": [
+      {
+        "movieId": "970450",
+        "rating": 3,
+        "comment": "que mala!!!!",
+        "createdAt": "2025-02-17T08:34:04.232Z",
+        "_id": "67b2f47c19238f9c8507fc32"
+      },
+      {
+        "movieId": "1272149",
+        "rating": 6,
+        "comment": "cacotaaaaa",
+        "createdAt": "2025-02-18T21:48:16.586Z",
+        "_id": "67b500208e47e99e60154565"
+      },
+      {
+        "movieId": "426063",
+        "rating": 8,
+        "comment": "que miedooo",
+        "createdAt": "2025-02-20T02:24:25.435Z",
+        "_id": "67b6925907e66ea50cc6d9b8"
+      }
+    ],
+    "pelisPendientes": [
+      {
+        "movieId": "424",
+        "addedAt": "2025-02-20T02:13:27.701Z",
+        "_id": "67b68fc707e66ea50cc6cd8d"
+      }
+    ],
+    "pelisVistas": [
+      {
+        "movieId": "278",
+        "watchedAt": "2025-02-20T02:13:29.040Z",
+        "_id": "67b68fc907e66ea50cc6cd98"
+      }
+    ],
+    "createdAt": "2025-02-10T23:50:15.128Z",
+    "updatedAt": "2025-02-20T02:24:25.436Z",
+    "__v": 0
+  }
