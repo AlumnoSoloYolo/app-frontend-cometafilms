@@ -118,14 +118,14 @@ export class RegisterComponent {
         })
       )
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.mensajeExitoso = `¡Registro exitoso! Bienvenid@, ${username}.`;
           this.showMensajeExitoso = true;
 
           setTimeout(() => {
             this.showMensajeExitoso = false;
             this.router.navigate(['/login']);
-          }, 3000);
+          }, 1500);
         },
         error: (error) => {
           console.error('Error en el registro:', error);

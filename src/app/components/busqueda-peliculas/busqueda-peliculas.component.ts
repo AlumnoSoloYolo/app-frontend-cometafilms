@@ -104,7 +104,6 @@ export class BusquedaPeliculasComponent {
 
 
 
-
   ngOnInit() {
     this.cargarDatosIniciales();
     this.configurarBusquedaAutomatica();
@@ -153,7 +152,7 @@ export class BusquedaPeliculasComponent {
 
   @HostListener('window:scroll')
   manejarScroll() {
-    const estaEnElFondo = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
+    const estaEnElFondo = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 300;
 
     if (!this.cargando && this.hayMasPaginas && estaEnElFondo) {
       this.paginaActual++;

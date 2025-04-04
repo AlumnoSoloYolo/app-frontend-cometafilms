@@ -7,6 +7,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard, NoAuthGuard } from './shared/guards/auth.guard';
 import { LoginComponent } from './components/login/login.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
+import { UsuariosListaComponent } from './components/lista-usuarios/lista-usuarios.component';
 
 export const routes: Routes = [
 
@@ -46,6 +47,20 @@ export const routes: Routes = [
         component: PerfilComponent,
         canActivate: [AuthGuard]
     },
-    { path: '**', redirectTo: 'login' }
+    {
+        path: 'usuarios',
+        component: UsuariosListaComponent,
+        canActivate: [AuthGuard]
+    },
+
+    {
+        path: 'usuarios/:id',
+        component: PerfilComponent,
+        canActivate: [AuthGuard]
+    },
+
+    { path: '**', redirectTo: 'login' },
+
+
 
 ];

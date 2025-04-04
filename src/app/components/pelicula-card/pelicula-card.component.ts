@@ -15,6 +15,7 @@ import { UserMovieService } from '../../services/user.service';
 export class PeliculaCardComponent implements OnInit {
 
   @Input() pelicula: any;
+  @Input() showActionButtons: boolean = true;
   listaGeneros: any[] = [];
   vista = false;
   pendiente = false;
@@ -32,7 +33,9 @@ export class PeliculaCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.generos();
-    this.cargarPerfilUsuario();
+    if (this.showActionButtons) {
+      this.cargarPerfilUsuario();
+    }
   }
 
   private cargarPerfilUsuario(): void {
@@ -46,6 +49,8 @@ export class PeliculaCardComponent implements OnInit {
   }
 
   private checkEstados(): void {
+    if (!this.userProfile) return;
+
     const movieIdString = this.pelicula.id.toString();
     this.vista = this.userProfile.pelisVistas.some((peli: any) => peli.movieId === movieIdString);
     this.pendiente = this.userProfile.pelisPendientes.some((peli: any) => peli.movieId === movieIdString);

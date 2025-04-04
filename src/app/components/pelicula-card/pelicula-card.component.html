@@ -1,7 +1,7 @@
 <div class="movie-card position-relative" [routerLink]="['/pelicula', pelicula.id]">
 
+    @if (showActionButtons) {
     <div class="action-buttons">
-
         <button class="action-btn watchlist-btn" [ngClass]="{ 'active': pendiente }" (click)="togglePendiente($event)">
             <i class="bi" [ngClass]="{ 
                     'bi-bookmark-plus': !pendiente, 
@@ -16,6 +16,7 @@
                 }" [title]="vista ? 'Eliminar de vistas' : 'Marcar como vista'"></i>
         </button>
     </div>
+    }
 
     <div class="card-img-container position-relative">
         @if(pelicula.poster_path){
