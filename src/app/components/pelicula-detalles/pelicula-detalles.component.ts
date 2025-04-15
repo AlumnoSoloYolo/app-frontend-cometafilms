@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VotoColorPipe } from '../../shared/pipes/voto-color.pipe';
@@ -8,6 +8,7 @@ import { UserMovieService } from '../../services/user.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PeliculaCardComponent } from '../pelicula-card/pelicula-card.component';
 import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-pelicula-detalles',
@@ -33,7 +34,8 @@ export class PeliculaDetallesComponent implements OnInit {
   currentUser: any;
 
   constructor(
-    private router: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private pelisService: PeliculasService,
     private userMovieService: UserMovieService,
     private sanitizer: DomSanitizer,
@@ -49,7 +51,7 @@ export class PeliculaDetallesComponent implements OnInit {
 
     this.reviewForm = this.fb.group({
       rating: [0, [Validators.required, Validators.min(1), Validators.max(10)]],
-      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(800)]]
+      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]]
     });
 
 
@@ -61,7 +63,7 @@ export class PeliculaDetallesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.router.params.subscribe(params => {
+    this.route.params.subscribe(params => {
       const id = params['id'];
       this.cargarDetallesPelicula(id);
       this.cargarReviews(id);
@@ -138,36 +140,17 @@ export class PeliculaDetallesComponent implements OnInit {
   cargarReviews(movieId: string): void {
     this.cargandoReviews = true;
 
-
-    const tmdbReviews = this.pelicula.reviews.results.map((review: any) => ({
-      _id: review.id,
-      movieId: this.pelicula.id,
-      username: review.author_details.username || 'Usuario Anónimo',
-      avatar: this.getAvatarPath("avatar4"),
-      rating: review.author_details.rating,
-      comment: review.content,
-      createdAt: new Date(review.created_at),
-      isExternal: true
-    }));
-
-
+    // Solo cargar reseñas de nuestra base de datos (no TMDB)
     this.userMovieService.getReviewsPelicula(movieId).subscribe({
       next: (data) => {
-
         const userReviews = data.reviews.map((review: any) => ({
           ...review,
           avatar: this.getAvatarPath(review.avatar || 'avatar5')
         }));
 
+        this.reviews = userReviews;
 
-        this.reviews = [...tmdbReviews, ...userReviews];
-
-
-        this.reviews.sort((a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-
-
+        // Verificar si el usuario actual tiene una reseña
         this.userMovieService.getReviewsUsuario().subscribe({
           next: (userReviews) => {
             this.reviewUsuarioActual = userReviews.find(r => r.movieId === movieId);
@@ -180,8 +163,6 @@ export class PeliculaDetallesComponent implements OnInit {
         });
       },
       error: (error) => {
-
-        this.reviews = tmdbReviews;
         console.error('Error al cargar reviews:', error);
         this.cargandoReviews = false;
       }
@@ -278,5 +259,18 @@ export class PeliculaDetallesComponent implements OnInit {
 
   setRating(rating: number): void {
     this.reviewForm.patchValue({ rating });
+  }
+
+  navigateReview(review: any): void {
+
+    if (review && review.reviewId) {
+      this.router.navigate(['/resenia', review.reviewId]);
+    } else {
+      console.error('No se encontró el ID de la reseña.');
+    }
+  }
+
+  trackReview(index: number, review: any): any {
+    return review.reviewId;
   }
 }

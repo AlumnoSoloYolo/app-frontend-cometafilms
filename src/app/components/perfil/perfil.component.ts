@@ -1,7 +1,7 @@
 // perfil.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 
 import { UserMovieService } from '../../services/user.service';
 import { PeliculasService } from '../../services/peliculas.service';
@@ -47,13 +47,15 @@ export class PerfilComponent implements OnInit {
   peliculasVistas: any[] = [];
   reviews: Review[] = [];
   isOwnProfile: boolean = true;
+  isFollowing: boolean = false;
 
   constructor(
     private userMovieService: UserMovieService,
     private movieService: PeliculasService,
     private userSocialService: UserSocialService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -93,6 +95,8 @@ export class PerfilComponent implements OnInit {
           pelisVistas: userData.pelisVistas || [],
           reviews: userData.reviews || [],
         };
+
+        this.isFollowing = userData.ifFollowing || false;
 
         if (this.userProfile.pelisPendientes.length > 0) {
           this.loadPeliculasPendientes();
@@ -271,5 +275,41 @@ export class PerfilComponent implements OnInit {
       left: newScroll,
       behavior: 'smooth'
     });
+  }
+
+
+  navigateReview(review: any): void {
+    console.log('Navegando a review con ID:', review._id);
+    if (review && review._id) {
+      this.router.navigate(['/resenia', review._id]);
+    }
+  }
+
+  toggleFollow(): void {
+    const userId = this.route.snapshot.paramMap.get('id');
+
+    if (!userId) return;
+
+    if (this.isFollowing) {
+      // Dejar de seguir
+      this.userSocialService.unfollowUser(userId).subscribe({
+        next: () => {
+          this.isFollowing = false;
+        },
+        error: (error) => {
+          console.error('Error al dejar de seguir:', error);
+        }
+      });
+    } else {
+      // Seguir
+      this.userSocialService.followUser(userId).subscribe({
+        next: () => {
+          this.isFollowing = true;
+        },
+        error: (error) => {
+          console.error('Error al seguir:', error);
+        }
+      });
+    }
   }
 }

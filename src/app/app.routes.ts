@@ -8,6 +8,7 @@ import { AuthGuard, NoAuthGuard } from './shared/guards/auth.guard';
 import { LoginComponent } from './components/login/login.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { UsuariosListaComponent } from './components/lista-usuarios/lista-usuarios.component';
+import { ReseniaDetallesComponent } from './components/resenia-detalles/resenia-detalles.component';
 
 export const routes: Routes = [
 
@@ -56,6 +57,12 @@ export const routes: Routes = [
     {
         path: 'usuarios/:id',
         component: PerfilComponent,
+        canActivate: [AuthGuard]
+    },
+
+    {
+        path: 'resenia/:reviewId',
+        component: ReseniaDetallesComponent,
         canActivate: [AuthGuard]
     },
 

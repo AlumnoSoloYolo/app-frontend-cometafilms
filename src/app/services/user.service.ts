@@ -28,6 +28,19 @@ interface ReviewsPeli {
   reviews: Review[];
 }
 
+
+export interface Comment {
+  _id?: string;
+  text: string;
+  userId: string;
+  username: string;
+  avatar: string;
+  parentId?: string | null;
+  createdAt: Date;
+  isEdited?: boolean;
+  editedAt?: Date;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -114,6 +127,21 @@ export class UserMovieService {
     );
   }
 
+  getReviewsByMovieId(movieId: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/user-movies/reviews/${movieId}`,
+      this.getHeaders()
+    );
+  }
+
+
+  getReviewById(reviewId: string): Observable<Review> {
+    return this.http.get<Review>(
+      `${this.apiUrl}/user-movies/reviews/${reviewId}`,
+      this.getHeaders()
+    );
+  }
+
   addReview(movieId: string, review: {
     rating: number;
     comment: string;
@@ -141,6 +169,41 @@ export class UserMovieService {
   deleteReview(movieId: string): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/user-movies/reviews/${movieId}`,
+      this.getHeaders()
+    );
+  }
+
+
+ 
+  getReviewComments(reviewId: string): Observable<Comment[]> {
+    return this.http.get<Comment[]>(
+      `${this.apiUrl}/comments/reviews/${reviewId}/comments`,
+      this.getHeaders()
+    );
+  }
+
+
+  addComment(reviewId: string, text: string, parentId?: string | null): Observable<Comment> {
+    return this.http.post<Comment>(
+      `${this.apiUrl}/comments/reviews/${reviewId}/comments`,
+      { text, parentId },
+      this.getHeaders()
+    );
+  }
+
+ 
+  editComment(reviewId: string, commentId: string, text: string): Observable<Comment> {
+    return this.http.put<Comment>(
+      `${this.apiUrl}/comments/reviews/${reviewId}/comments/${commentId}`,
+      { text },
+      this.getHeaders()
+    );
+  }
+
+  
+  deleteComment(reviewId: string, commentId: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/comments/reviews/${reviewId}/comments/${commentId}`,
       this.getHeaders()
     );
   }

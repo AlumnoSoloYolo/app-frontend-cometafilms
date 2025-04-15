@@ -1,10 +1,23 @@
 <div class="profile-container">
     @if (userProfile) {
     <div class="profile-header">
-        <div class="avatar-section">
-            <img [src]="getAvatarPath()" alt="Avatar" class="profile-avatar">
-            <h2>{{ userProfile.username }}</h2>
+
+        <div class="d-flex justify-content-between align-items-center p-3">
+            <div class="avatar-section">
+                <img [src]="getAvatarPath()" alt="Avatar" class="profile-avatar">
+                <h2>{{ userProfile.username }}</h2>
+            </div>
+
+            @if (!isOwnProfile) {
+            <div class="follow-button-container">
+                <button class="btn-follow" [ngClass]="{'following': isFollowing}" (click)="toggleFollow()">
+                    <i class="bi" [ngClass]="isFollowing ? 'bi-person-dash-fill' : 'bi-person-plus-fill'"></i>
+                    {{ isFollowing ? 'Dejar de seguir' : 'Seguir' }}
+                </button>
+            </div>
+            }
         </div>
+
 
         <div class="profile-stats">
             <div class="stat-item">
@@ -102,7 +115,7 @@
                 <div id="resen" class="movie-scroll-container">
                     <div class="movie-scroll-content p-3">
                         @for (review of reviews; track review._id) {
-                        <div class="review-card">
+                        <div class="review-card" (click)="navigateReview(review)">
                             <div class="review-header">
                                 <img [src]="review.moviePosterPath" alt="Portada de la película" class="review-poster">
                                 <div class="review-title">{{ review.movieTitle }}</div>
@@ -114,6 +127,7 @@
                                 </div>
                                 <div class="review-comment">{{ review.comment }}</div>
                                 <div class="review-date">Fecha: {{ review.createdAt | date }}</div>
+                                <div class="review-date">id: {{ review._id }}</div>
                             </div>
                         </div>
                         }

@@ -1,0 +1,175 @@
+<!-- resenia-detalles.component.html -->
+<div class="resenia-container">
+    @if (isLoading) {
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+    } @else if (review && movieDetails) {
+    <div class="resenia-header">
+        <button class="btn-volver" (click)="volverAPelicula()">
+            <i class="bi bi-arrow-left"></i> Ver película
+        </button>
+
+        <div class="movie-info">
+            <img [src]="'https://image.tmdb.org/t/p/w200' + movieDetails.poster_path" [alt]="movieDetails.title"
+                class="movie-poster">
+            <div class="movie-details">
+                <h2>{{ movieDetails.title }}</h2>
+                <p>{{ movieDetails.release_date | date:'yyyy' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="resenia-content">
+        <div class="user-info">
+            <img [src]="getAvatarPath(review.avatar)" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+                <h3>{{ review.username }}</h3>
+                <span class="fecha">{{ review.createdAt | date:'longDate' }}</span>
+            </div>
+
+
+            @if (review.userId !== currentUser?.id) {
+            <button class="btn-follow" [ngClass]="{'following': isFollowing}" (click)="toggleFollow($event)">
+                <i class="bi" [ngClass]="isFollowing ? 'bi-person-dash-fill' : 'bi-person-plus-fill'"></i>
+                {{ isFollowing ? 'Dejar de seguir' : 'Seguir' }}
+            </button>
+            }
+
+
+            <div class="rating">
+                <i class="bi bi-star-fill"></i> {{ review.rating }}/10
+            </div>
+        </div>
+
+        <div class="comment">
+            <p>{{ review.comment }}</p>
+        </div>
+    </div>
+
+    <!-- Sección de comentarios -->
+    <div class="comments-section">
+        <h3>Comentarios</h3>
+
+        <!-- Formulario para comentar -->
+        <div id="commentForm" class="comment-form">
+            @if (replyingTo) {
+            <div class="reply-info">
+                <p>Respondiendo a <strong>{{ replyingTo.username }}</strong></p>
+                <button type="button" class="btn-cancel" (click)="cancelAction()">Cancelar</button>
+            </div>
+            } @else if (editingComment) {
+            <div class="edit-info">
+                <p>Editando tu comentario</p>
+                <button type="button" class="btn-cancel" (click)="cancelAction()">Cancelar</button>
+            </div>
+            }
+
+            <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+                <div class="form-group">
+                    <textarea formControlName="text"
+                        [placeholder]="editingComment ? 'Editar comentario...' : (replyingTo ? 'Escribe tu respuesta...' : 'Escribe un comentario...')"
+                        rows="3" maxlength="500" class="comment-textarea"></textarea>
+                    <div class="character-count">{{ commentForm.get('text')?.value?.length || 0 }}/500</div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" [disabled]="commentForm.invalid" class="btn-comment">
+                        {{ editingComment ? 'Guardar cambios' : (replyingTo ? 'Responder' : 'Comentar') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de comentarios -->
+        @if (organizedComments.length === 0) {
+        <div class="no-comments">
+            <p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>
+        </div>
+        } @else {
+        <div class="comments-list">
+            @for (comment of organizedComments; track comment._id) {
+            <div class="comment-card">
+                <div class="comment-header">
+                    <img [src]="getAvatarPath(comment.avatar)" alt="Avatar" class="comment-avatar">
+                    <div class="comment-info">
+                        <h4 class="comment-username">{{ comment.username }}</h4>
+                        <p class="comment-text">{{ comment.text }}</p>
+                        <div class="comment-actions">
+                            <span class="comment-date">
+                                {{ comment.createdAt | date:'medium' }}
+                                @if (comment.isEdited) {
+                                <span class="edited-badge">editado</span>
+                                }
+                            </span>
+                            <div class="action-buttons">
+                                <button class="btn-action" (click)="replyToComment(comment)">
+                                    <i class="bi bi-reply"></i> Responder
+                                </button>
+                                @if (canEditComment(comment)) {
+                                <button class="btn-action" (click)="editComment(comment)">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                }
+                                @if (canDeleteComment(comment)) {
+                                <button class="btn-action btn-delete" (click)="deleteComment(comment._id!)">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Respuestas al comentario -->
+                @if (comment.replies && comment.replies.length > 0) {
+                <div class="replies-container">
+                    @for (reply of comment.replies; track reply._id) {
+                    <div class="reply-card">
+                        <div class="comment-header">
+                            <img [src]="getAvatarPath(reply.avatar)" alt="Avatar" class="comment-avatar">
+                            <div class="comment-info">
+                                <h4 class="comment-username">{{ reply.username }}</h4>
+                                <p class="comment-text">{{ reply.text }}</p>
+                                <div class="comment-actions">
+                                    <span class="comment-date">
+                                        {{ reply.createdAt | date:'medium' }}
+                                        @if (reply.isEdited) {
+                                        <span class="edited-badge">editado</span>
+                                        }
+                                    </span>
+                                    <div class="action-buttons">
+                                        <button class="btn-action" (click)="replyToComment(comment)">
+                                            <i class="bi bi-reply"></i> Responder
+                                        </button>
+                                        @if (canEditComment(reply)) {
+                                        <button class="btn-action" (click)="editComment(reply)">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                        }
+                                        @if (canDeleteComment(reply)) {
+                                        <button class="btn-action btn-delete" (click)="deleteComment(reply._id!)">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+    </div>
+    } @else {
+    <div class="error-message">
+        <h3>No se encontró la reseña</h3>
+        <button class="btn-primary" (click)="volverAPelicula()">Volver</button>
+    </div>
+    }
+</div>
