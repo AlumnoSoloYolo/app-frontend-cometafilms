@@ -9,6 +9,8 @@ import { LoginComponent } from './components/login/login.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { UsuariosListaComponent } from './components/lista-usuarios/lista-usuarios.component';
 import { ReseniaDetallesComponent } from './components/resenia-detalles/resenia-detalles.component';
+import { ListaDetallesComponent } from './components/lista-detalles/lista-detalles.component';
+import { NotificacionesComponent } from './components/notificaciones/notificaciones.component';
 
 export const routes: Routes = [
 
@@ -63,6 +65,16 @@ export const routes: Routes = [
     {
         path: 'resenia/:reviewId',
         component: ReseniaDetallesComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'listas/:id',
+        component: ListaDetallesComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'notificaciones',
+        component: NotificacionesComponent,
         canActivate: [AuthGuard]
     },
 

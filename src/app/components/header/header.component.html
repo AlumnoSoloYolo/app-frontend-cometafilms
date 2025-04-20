@@ -57,6 +57,14 @@
                     </a>
                 </li>
                 <li>
+                    <a class="dropdown-item" routerLink="/notificaciones">
+                        <i class="bi bi-bell me-2"></i>Notificaciones
+                        @if (pendingRequestsCount > 0) {
+                        <span class="notify-badge">{{ pendingRequestsCount }}</span>
+                        }
+                    </a>
+                </li>
+                <li>
                     <hr class="dropdown-divider">
                 </li>
                 <li>

@@ -105,8 +105,31 @@
   color: rgb(211, 20, 211);
 }
 
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+}
+
+.notify-badge {
+  position: absolute;
+  right: 125px;
+  top: 45%;
+  transform: translateY(-50%);
+  background-color: #FF1493;
+  color: white;
+  border-radius: 50%;
+  min-width: 22px;
+  height: 22px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
 /* Estilos para móviles */
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
   .navbar-collapse {
       flex-basis: 100%;
       flex-grow: 1;

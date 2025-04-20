@@ -53,6 +53,7 @@ export class UserSocialService {
     );
   }
 
+
   followUser(userId: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/follow/${userId}`,
@@ -64,6 +65,65 @@ export class UserSocialService {
   unfollowUser(userId: string): Observable<any> {
     return this.http.delete(
       `${this.apiUrl}/follow/${userId}`,
+      this.getHeaders()
+    );
+  }
+
+  getUserFollowers(userId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/users/${userId}/followers`,
+      this.getHeaders()
+    );
+  }
+
+  getUserFollowing(userId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/users/${userId}/following`,
+      this.getHeaders()
+    );
+  }
+
+
+  getFollowStatus(userId: string): Observable<{ status: 'none' | 'requested' | 'following' }> {
+    return this.http.get<{ status: 'none' | 'requested' | 'following' }>(
+      `${this.apiUrl}/follow/${userId}/status`,
+      this.getHeaders()
+    );
+  }
+
+  getPendingFollowRequests(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/follow/requests`,
+      this.getHeaders()
+    );
+  }
+
+  acceptFollowRequest(requestId: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/follow/requests/${requestId}/accept`,
+      {},
+      this.getHeaders()
+    );
+  }
+
+  rejectFollowRequest(requestId: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/follow/requests/${requestId}/reject`,
+      {},
+      this.getHeaders()
+    );
+  }
+
+  cancelFollowRequest(requestId: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/follow/requests/${requestId}/cancel`,
+      this.getHeaders()
+    );
+  }
+
+  removeFollower(followerId: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/follower/${followerId}/remove`,
       this.getHeaders()
     );
   }

@@ -1,4 +1,4 @@
-// src/app/components/usuarios-lista/usuarios-lista.component.ts
+// src/app/components/lista-usuarios/lista-usuarios.component.ts
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -24,6 +24,11 @@ export class UsuariosListaComponent implements OnInit {
   hayMasPaginas = true;
   searchForm: FormGroup;
   mostrarBotonSubir = false;
+
+  // Nuevas propiedades para seguimiento
+  followStatus: { [userId: string]: 'none' | 'requested' | 'following' } = {};
+  requestIds: { [userId: string]: string } = {};
+  isHovering: { [userId: string]: boolean } = {};
 
   constructor(
     private userSocialService: UserSocialService,
@@ -71,6 +76,23 @@ export class UsuariosListaComponent implements OnInit {
     this.cargarUsuarios();
   }
 
+  // Método para verificar estado de seguimiento de todos los usuarios
+  checkFollowStatus(usuarios: User[]): void {
+    usuarios.forEach(usuario => {
+      this.userSocialService.getFollowStatus(usuario._id).subscribe({
+        next: (response: any) => {
+          this.followStatus[usuario._id] = response.status;
+          if (response.requestId) {
+            this.requestIds[usuario._id] = response.requestId;
+          }
+        },
+        error: (error) => {
+          console.error(`Error al verificar estado de seguimiento para ${usuario.username}:`, error);
+        }
+      });
+    });
+  }
+
   cargarUsuarios(pagina: number = 1): void {
     if (this.cargando) return;
 
@@ -89,6 +111,9 @@ export class UsuariosListaComponent implements OnInit {
         this.totalUsuarios = response.pagination.total;
         this.hayMasPaginas = response.pagination.hasMore;
         this.cargando = false;
+
+        // Verificar estado de seguimiento de los nuevos usuarios
+        this.checkFollowStatus(response.users);
       },
       error: (error: any) => {
         console.error('Error al cargar usuarios:', error);
@@ -107,6 +132,9 @@ export class UsuariosListaComponent implements OnInit {
         this.usuarios = usuarios;
         this.hayMasPaginas = false; // Desactivar scroll infinito en modo búsqueda
         this.cargando = false;
+
+        // Verificar estado de seguimiento para resultados de búsqueda
+        this.checkFollowStatus(usuarios);
       },
       error: (error: any) => {
         console.error('Error al buscar usuarios:', error);
@@ -116,28 +144,57 @@ export class UsuariosListaComponent implements OnInit {
     });
   }
 
+  // Método para manejar el hover
+  setHovering(userId: string, isHovering: boolean): void {
+    this.isHovering[userId] = isHovering;
+  }
+
+  // Método toggleFollow actualizado
   toggleFollow(usuario: User, event: Event): void {
     event.stopPropagation();
+    const userId = usuario._id;
 
-    // Mostrar estado visual inmediatamente para mejor experiencia
-    const previousState = usuario.isFollowing;
-    usuario.isFollowing = !previousState;
+    // Si ya está siguiendo, dejar de seguir
+    if (this.followStatus[userId] === 'following') {
+      this.userSocialService.unfollowUser(userId).subscribe({
+        next: () => {
+          this.followStatus[userId] = 'none';
+          usuario.isFollowing = false;
+        },
+        error: (error) => {
+          console.error('Error al dejar de seguir:', error);
+        }
+      });
+      return;
+    }
 
-    // Llamar al endpoint correspondiente
-    const action = previousState
-      ? this.userSocialService.unfollowUser(usuario._id)
-      : this.userSocialService.followUser(usuario._id);
+    // Si hay una solicitud pendiente, cancelarla
+    if (this.followStatus[userId] === 'requested' && this.requestIds[userId]) {
+      this.userSocialService.cancelFollowRequest(this.requestIds[userId]).subscribe({
+        next: () => {
+          this.followStatus[userId] = 'none';
+          delete this.requestIds[userId];
+        },
+        error: (error) => {
+          console.error('Error al cancelar solicitud:', error);
+        }
+      });
+      return;
+    }
 
-    action.subscribe({
-      next: () => {
-        console.log(`${previousState ? 'Dejaste de seguir' : 'Ahora sigues'} a ${usuario.username}`);
+    // En cualquier otro caso, intentar seguir
+    this.userSocialService.followUser(userId).subscribe({
+      next: (response: any) => {
+        this.followStatus[userId] = response.status;
+        if (response.requestId) {
+          this.requestIds[userId] = response.requestId;
+        }
+        if (response.status === 'following') {
+          usuario.isFollowing = true;
+        }
       },
       error: (error) => {
-        console.error('Error al cambiar estado de seguimiento:', error);
-        // Revertir estado visual en caso de error
-        usuario.isFollowing = previousState;
-
-        // Mostrar mensaje de error (puedes implementar un servicio de notificaciones)
+        console.error('Error al seguir usuario:', error);
         alert(`Error: ${error.error?.message || 'No se pudo completar la acción'}`);
       }
     });

@@ -79,10 +79,22 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button class="btn w-100"
-                                [ngClass]="{'btn-primary': !usuario.isFollowing, 'btn-secondary': usuario.isFollowing}"
+                            <button class="btn w-100" [ngClass]="{
+    'btn-primary': followStatus[usuario._id] !== 'following' && followStatus[usuario._id] !== 'requested',
+    'btn-outline-warning': followStatus[usuario._id] === 'requested' && isHovering[usuario._id],
+    'btn-warning': followStatus[usuario._id] === 'requested' && !isHovering[usuario._id],
+    'btn-danger': followStatus[usuario._id] === 'following' && isHovering[usuario._id],
+    'btn-outline-light': followStatus[usuario._id] === 'following' && !isHovering[usuario._id]
+  }" (mouseenter)="setHovering(usuario._id, true)" (mouseleave)="setHovering(usuario._id, false)"
                                 (click)="toggleFollow(usuario, $event)">
-                                {{ usuario.isFollowing ? 'Dejar de seguir' : 'Seguir' }}
+                                <i class="bi" [ngClass]="
+      followStatus[usuario._id] === 'following' ? 'bi-person-dash-fill' : 
+      (followStatus[usuario._id] === 'requested' ? 'bi-x-circle' : 'bi-person-plus-fill')
+    "></i>
+                                {{ followStatus[usuario._id] === 'following' ? (isHovering[usuario._id] ? 'Dejar de
+                                seguir' : 'Siguiendo') :
+                                (followStatus[usuario._id] === 'requested' ? (isHovering[usuario._id] ? 'Cancelar
+                                solicitud' : 'Solicitado') : 'Seguir') }}
                             </button>
                         </div>
                     </div>

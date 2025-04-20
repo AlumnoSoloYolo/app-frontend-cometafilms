@@ -6,6 +6,7 @@ export interface User {
     pelisPendientesCount: number;
     reviewsCount: number;
     isFollowing?: boolean;
+    hovering?: boolean;
 }
 
 export interface UserResponse {

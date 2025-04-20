@@ -112,6 +112,26 @@ export class UserMovieService {
     );
   }
 
+  updateUserProfile(userData: {
+    username?: string,
+    avatar?: string,
+    biografia?: string,
+    perfilPrivado?: boolean
+  }): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/user-movies/profile/update`,
+      userData,
+      this.getHeaders()
+    );
+  }
+
+  deleteAccount(): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/user-movies/profile/delete`,
+      this.getHeaders()
+    );
+  }
+
 
   getReviewsUsuario(): Observable<Review[]> {
     return this.http.get<Review[]>(
@@ -174,7 +194,7 @@ export class UserMovieService {
   }
 
 
- 
+
   getReviewComments(reviewId: string): Observable<Comment[]> {
     return this.http.get<Comment[]>(
       `${this.apiUrl}/comments/reviews/${reviewId}/comments`,
@@ -191,7 +211,7 @@ export class UserMovieService {
     );
   }
 
- 
+
   editComment(reviewId: string, commentId: string, text: string): Observable<Comment> {
     return this.http.put<Comment>(
       `${this.apiUrl}/comments/reviews/${reviewId}/comments/${commentId}`,
@@ -200,7 +220,7 @@ export class UserMovieService {
     );
   }
 
-  
+
   deleteComment(reviewId: string, commentId: string): Observable<any> {
     return this.http.delete(
       `${this.apiUrl}/comments/reviews/${reviewId}/comments/${commentId}`,

@@ -36,6 +36,32 @@
                     </span>
 
                 </div>
+
+
+                <div class="movie-actions">
+                    <button class="action-btn watchlist-btn" [ngClass]="{ 'active': isPendiente }"
+                        (click)="togglePendiente($event)">
+                        <i class="bi" [ngClass]="{ 
+                    'bi-bookmark-plus': !isPendiente, 
+                    'bi-bookmark-x-fill': isPendiente 
+                  }"></i>
+                        {{ isPendiente ? 'Quitar de pendientes' : 'Añadir a pendientes' }}
+                    </button>
+
+                    <button class="action-btn watched-btn" [ngClass]="{ 'active': isVista }"
+                        (click)="toggleVista($event)">
+                        <i class="bi" [ngClass]="{ 
+                    'bi-eye': !isVista, 
+                    'bi-eye-slash-fill': isVista 
+                  }"></i>
+                        {{ isVista ? 'Quitar de vistas' : 'Marcar como vista' }}
+                    </button>
+
+                    <button class="action-btn list-btn" (click)="abrirModalListas($event)">
+                        <i class="bi bi-collection-play"></i>
+                        Añadir a lista
+                    </button>
+                </div>
                 <div class="genres mt-3">
                     @for (genero of pelicula.genres; track genero.id) {
                     <span class="badge cyber-badge me-2">{{genero.name}}</span>
@@ -44,12 +70,144 @@
                 <p class="overview mt-4">{{pelicula.overview}}</p>
             </div>
         </div>
-        <div class="movie-actions">
-            <!-- Actions buttons commented out -->
-        </div>
+
     </div>
 </div>
 
+
+<!-- Modal de Listas Mejorado -->
+@if(mostrarModalListas){
+<div class="modal-overlay" (click)="cerrarModalListas()"></div>
+<div class="modal-container">
+    <div class="cyber-form">
+        @if(!mostrarCrearLista){
+        <!-- Mostrar listas existentes -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Añadir a lista</h3>
+            <button class="btn btn-primary" (click)="mostrarCrearLista = true">
+                <i class="bi bi-plus"></i> Nueva lista
+            </button>
+        </div>
+
+        @if(cargandoListas){
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+        }
+
+        @if(!cargandoListas && misListas.length === 0){
+        <div class="empty-lists-message">
+            <i class="bi bi-collection-play"></i>
+            <p>Aún no has creado ninguna lista</p>
+            <button class="btn btn-primary" (click)="mostrarCrearLista = true">
+                Crear mi primera lista
+            </button>
+        </div>
+        }
+
+        @if(!cargandoListas && misListas.length > 0){
+        <div class="lists-grid">
+            @for(lista of misListas; track lista._id){
+            <div class="list-item">
+                <div class="list-item-content" [ngClass]="{'movie-in-list': peliculaEnLista(lista, pelicula.id)}"
+                    (click)="togglePeliculaEnLista(lista, pelicula.id)">
+                    <div class="list-info">
+                        <h6 class="list-title">{{lista.title}}</h6>
+                        <p class="list-count">{{lista.movies.length}} películas</p>
+                    </div>
+                    <div class="list-select-indicator">
+                        @if(peliculaEnLista(lista, pelicula.id)){
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        } @else {
+                        <i class="bi bi-circle text-muted"></i>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <div class="form-actions mt-4">
+            <button class="btn-cancel" (click)="cerrarModalListas()">
+                Cerrar
+            </button>
+        </div>
+        }
+
+        @if(mostrarCrearLista){
+        <!-- Formulario para crear nueva lista -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Crear nueva lista</h3>
+            <button class="btn btn-outline-light" (click)="mostrarCrearLista = false">
+                <i class="bi bi-arrow-left"></i> Volver
+            </button>
+        </div>
+
+        <form [formGroup]="nuevaListaForm" (ngSubmit)="crearListaDesdeModal()">
+            <div class="form-group">
+                <label for="title">Título *</label>
+                <input id="title" type="text" formControlName="title" class="form-control"
+                    [class.is-invalid]="hasFormError('title', nuevaListaForm)" placeholder="Nombre de la lista">
+                @if (hasFormError('title', nuevaListaForm)) {
+                <div class="error-message">
+                    {{ getFormErrorMessage('title', nuevaListaForm) }}
+                </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" formControlName="description" class="form-control" rows="3"
+                    placeholder="Describe tu lista (opcional)"></textarea>
+                <div class="character-count">
+                    {{ nuevaListaForm.get('description')?.value?.length || 0 }}/500
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Portada (opcional)</label>
+                <div class="custom-file mb-3">
+                    <input type="file" class="custom-file-input" id="coverImage" (change)="onFileSelected($event)"
+                        accept="image/*">
+                    <label class="custom-file-label" for="coverImage">
+                        {{ selectedFile ? selectedFile.name : 'Seleccionar imagen...' }}
+                    </label>
+                </div>
+                @if (coverImagePreview) {
+                <div class="image-preview mb-3">
+                    <img [src]="coverImagePreview" alt="Preview" class="img-fluid">
+                </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <div class="custom-checkbox">
+                    <label>
+                        <input type="checkbox" formControlName="isPublic">
+                        <span class="checkbox-label">Lista pública</span>
+                    </label>
+                </div>
+                <small class="form-text text-muted">
+                    Si la lista es privada, solo tú podrás verla.
+                </small>
+            </div>
+
+            <div class="form-actions mt-4">
+                <button type="button" class="btn-cancel" (click)="mostrarCrearLista = false">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-save" [disabled]="nuevaListaForm.invalid">
+                    Crear y añadir película
+                </button>
+            </div>
+        </form>
+        }
+    </div>
+</div>
+}
 
 
 <div class="container mt-5">
@@ -104,6 +262,9 @@
                         </div>
                     </div>
 
+
+
+
                     <div class="form-group">
                         <label>Comentario</label>
                         <textarea formControlName="comment" rows="4"
@@ -121,6 +282,8 @@
                 </form>
             </div>
             }
+
+
 
 
             <!-- Lista de reviews -->
@@ -155,13 +318,15 @@
                                     </div>
                                 </div>
 
+
+
                                 @if (!review.isExternal && isCurrentUserReview(review)) {
 
                                 <div class="review-actions">
-                                    <button (click)="editarReview()" class="btn btn-link">
+                                    <button (click)="$event.stopPropagation(); editarReview()" class="btn btn-link">
                                         <i class="fas fa-wrench"></i>
                                     </button>
-                                    <button (click)="eliminarReview()" class="btn btn-link">
+                                    <button (click)="$event.stopPropagation(); eliminarReview()" class="btn btn-link">
                                         <i class="bi bi-trash3-fill"></i>
                                     </button>
                                 </div>
@@ -172,9 +337,14 @@
                                 <i class="bi bi-star-fill me-2"></i>
                                 {{review.rating}}/10
                             </span>
+
+                            <app-like-button [contentType]="'review'" [contentId]="review.reviewId">
+                            </app-like-button>
                         </div>
+
                     </div>
                 </div>
+
                 }
             </div>
         </section>

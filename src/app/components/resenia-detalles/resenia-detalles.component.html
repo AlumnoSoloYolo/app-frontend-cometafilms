@@ -30,13 +30,45 @@
                 <span class="fecha">{{ review.createdAt | date:'longDate' }}</span>
             </div>
 
+            @if (isCurrentUserReview()) {
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm rounded-circle" type="button" id="settingsDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                    <li><a class="dropdown-item" href="#" (click)="$event.preventDefault(); editarReview()">
+                            <i class="bi bi-pencil me-2"></i>Editar reseña
+                        </a></li>
+                    <li><a class="dropdown-item" href="#" (click)="$event.preventDefault(); eliminarReview()">
+                            <i class="bi bi-trash me-2"></i>Eliminar reseña
+                        </a></li>
+                </ul>
+            </div>
+            }
 
-            @if (review.userId !== currentUser?.id) {
-            <button class="btn-follow" [ngClass]="{'following': isFollowing}" (click)="toggleFollow($event)">
-                <i class="bi" [ngClass]="isFollowing ? 'bi-person-dash-fill' : 'bi-person-plus-fill'"></i>
-                {{ isFollowing ? 'Dejar de seguir' : 'Seguir' }}
+            @if (shouldShowFollowButton()) {
+            <button class="btn-follow" [ngClass]="{
+                  'following': followStatus === 'following',
+                  'requested': followStatus === 'requested'
+                }" (click)="toggleFollow($event)" (mouseenter)="isHovering = true" (mouseleave)="isHovering = false">
+                <i class="bi" [ngClass]="
+                    followStatus === 'following' ? 'bi-person-dash-fill' : 
+                    (followStatus === 'requested' ? 'bi-x-circle' : 'bi-person-plus-fill')
+                  "></i>
+                @if (followStatus === 'following') {
+                <span>{{ isHovering ? 'Dejar de seguir' : 'Siguiendo' }}</span>
+                } @else if (followStatus === 'requested') {
+                <span>{{ isHovering ? 'Cancelar solicitud' : 'Solicitado' }}</span>
+                } @else {
+                <span>Seguir</span>
+                }
             </button>
             }
+
+
+
+
 
 
             <div class="rating">
@@ -44,10 +76,56 @@
             </div>
         </div>
 
+
+
         <div class="comment">
             <p>{{ review.comment }}</p>
         </div>
+
+        <div class="d-flex align-items-center">
+            <app-like-button [contentType]="'review'" [contentId]="review._id">
+            </app-like-button>
+        </div>
+
     </div>
+
+
+    @if (mostrarFormularioEdicion) {
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+        <form [formGroup]="reviewForm" (ngSubmit)="guardarEdicionReview()" class="cyber-form">
+            <h3 class="mb-3">Editar reseña</h3>
+
+            <div class="form-group">
+                <label>Puntuación</label>
+                <div class="rating-container">
+                    @for (star of [1,2,3,4,5,6,7,8,9,10]; track star) {
+                    <button type="button" (click)="setRating(star)"
+                        [class.active]="star <= reviewForm.get('rating')?.value" class="rating-star">
+                        ★
+                    </button>
+                    }
+                    <span class="ms-2">{{ reviewForm.get('rating')?.value || 0 }}/10</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Comentario</label>
+                <textarea formControlName="comment" rows="4"
+                    placeholder="Escribe tu opinión sobre la película..."></textarea>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary m-1" [disabled]="!reviewForm.valid">
+                    Actualizar
+                </button>
+                <button type="button" class="btn btn-secondary m-1" (click)="cancelarEdicion()">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+    }
 
     <!-- Sección de comentarios -->
     <div class="comments-section">
@@ -104,6 +182,13 @@
                                 }
                             </span>
                             <div class="action-buttons">
+
+                                <div class="d-flex align-items-center">
+                                    <app-like-button [contentType]="'comment'" [contentId]="comment._id!">
+                                    </app-like-button>
+                                </div>
+
+
                                 <button class="btn-action" (click)="replyToComment(comment)">
                                     <i class="bi bi-reply"></i> Responder
                                 </button>
@@ -139,7 +224,12 @@
                                         <span class="edited-badge">editado</span>
                                         }
                                     </span>
+
                                     <div class="action-buttons">
+                                        <div class="d-flex align-items-center">
+                                            <app-like-button [contentType]="'comment'" [contentId]="reply._id!">
+                                            </app-like-button>
+                                        </div>
                                         <button class="btn-action" (click)="replyToComment(comment)">
                                             <i class="bi bi-reply"></i> Responder
                                         </button>

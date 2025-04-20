@@ -102,21 +102,13 @@ export class PeliculaCardComponent implements OnInit {
 
   private addToPendientes(): void {
     const movieIdString = this.pelicula.id.toString();
-
-
-    this.userService.removePelisVistas(movieIdString).subscribe({
+    this.userService.addPelisPendientes(movieIdString).subscribe({
       next: () => {
-
-        this.userService.addPelisPendientes(movieIdString).subscribe({
-          next: () => {
-            this.pendiente = true;
-            this.vista = false;
-            this.peliculaPendienteAgregada.emit(movieIdString);
-          },
-          error: (error) => console.error(`Error al añadir a pendientes`, error)
-        });
+        this.pendiente = true;
+        this.vista = false;
+        this.peliculaPendienteAgregada.emit(movieIdString);
       },
-      error: (error) => console.error(`Error al eliminar de vistas`, error)
+      error: (error) => console.error(`Error al añadir a pendientes`, error)
     });
   }
 

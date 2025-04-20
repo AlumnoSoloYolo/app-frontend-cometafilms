@@ -589,8 +589,21 @@
 }
 
 .rating-container .rating-star.active {
-  color: #ffc107; /* Color de las estrellas activas */
+  color: rgb(211, 20, 211);
+  text-shadow: 0 0 10px rgba(211, 20, 211, 0.5);
 }
+
+.rating-star {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: rgba(211, 20, 211, 0.3);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0 2px;
+}
+
+
 
 /* Estilos para el botón de cerrar */
 .btn-secondary {
@@ -763,6 +776,488 @@
     color: #dc3545;
     font-size: 0.85rem;
     margin-top: 0.5rem;
+}
+
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.action-btn i {
+  font-size: 1.1rem;
+}
+
+.action-btn:hover {
+  background: rgba(20, 20, 20, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.action-btn.active {
+  background: rgba(50, 50, 50, 0.9);
+
+}
+
+.watchlist-btn {
+  margin-right: 1rem;
+}
+
+.action-btn.watchlist-btn i {
+  color: #6B77E5;
+}
+
+.action-btn.watched-btn i {
+  color: #6B77E5; /* Un verde para indicar vista */
+}
+
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+}
+
+.action-btn i {
+  font-size: 1.1rem;
+}
+
+.action-btn:hover {
+  background: rgba(20, 20, 20, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.action-btn.active {
+  background: rgba(50, 50, 50, 0.9);
+}
+
+.action-btn.watchlist-btn i {
+  color: #6B77E5;
+}
+
+.action-btn.watched-btn i {
+  color: #6B77E5;
+}
+
+.action-btn.list-btn i {
+  color: #6B77E5;
+}
+
+/* Estilos para el modal de listas */
+.lists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.list-item {
+  background: rgba(30, 35, 40, 0.8);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.list-item-content {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 10px;
+  position: relative;
+}
+
+.list-item-content.movie-in-list {
+  background: rgba(107, 119, 229, 0.1);
+  border: 1px solid rgba(107, 119, 229, 0.3);
+}
+
+.list-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+
+.list-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail-placeholder i {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.list-info {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.toggle-list-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-add {
+  background: rgba(107, 119, 229, 0.2);
+  color: #6B77E5;
+}
+
+.btn-remove {
+  background: rgba(255, 50, 50, 0.2);
+  color: #ff5050;
+}
+
+.empty-lists-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-lists-message i {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.2);
+  margin-bottom: 1rem;
+}
+
+.empty-lists-message p {
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* Estilos para el modal de listas */
+.lists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.list-item {
+  background: rgba(30, 35, 40, 0.8);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.list-item-content {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.list-item-content:hover {
+  background: rgba(107, 119, 229, 0.1);
+}
+
+.list-item-content.movie-in-list {
+  background: rgba(107, 119, 229, 0.2);
+  border: 1px solid rgba(107, 119, 229, 0.3);
+}
+
+.list-info {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+  color: white;
+}
+
+.list-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.list-select-indicator {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-select-indicator i {
+  font-size: 1.2rem;
+}
+
+.empty-lists-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-lists-message i {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.2);
+  margin-bottom: 1rem;
+}
+
+.empty-lists-message p {
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-cancel, .btn-save {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: none;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.btn-save {
+  background: linear-gradient(45deg, rgb(14, 64, 64), rgb(211, 20, 211));
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(211, 20, 211, 0.3);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Formulario dentro del modal */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(211, 20, 211, 0.3);
+  color: white;
+  padding: 0.8rem;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: rgb(211, 20, 211);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 10px rgba(211, 20, 211, 0.3);
+}
+
+.character-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.25rem;
+}
+
+.custom-file-label {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(211, 20, 211, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-file-input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.image-preview {
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image-preview img {
+  max-height: 150px;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.form-check-label {
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.custom-checkbox {
+  margin-bottom: 0.5rem;
+}
+
+.custom-checkbox label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(211, 20, 211, 0.5);
+  border-radius: 4px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+  background-color: rgba(211, 20, 211, 0.8);
+  border-color: rgba(211, 20, 211, 1);
+}
+
+.custom-checkbox input[type="checkbox"]:checked::before {
+  content: '✓';
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+}
+
+.custom-checkbox input[type="checkbox"]:hover {
+  border-color: rgba(211, 20, 211, 0.8);
+  background-color: rgba(211, 20, 211, 0.1);
+}
+
+.checkbox-label {
+  user-select: none;
+  font-weight: normal;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lists-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn-cancel, .btn-save {
+    width: 100%;
+  }
 }
 
 /* Responsive Styles */
