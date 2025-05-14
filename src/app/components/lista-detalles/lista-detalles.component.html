@@ -72,14 +72,13 @@
     <div class="container mt-4">
         @if (isOwnList) {
         <div class="search-container mb-4">
-            <form [formGroup]="searchForm" (ngSubmit)="buscarPeliculas()">
-                <div class="input-group">
-                    <input type="text" class="form-control search-input" formControlName="query"
-                        placeholder="Buscar películas para añadir a la lista...">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
+            <form [formGroup]="searchForm" (ngSubmit)="buscarPeliculas()" class="d-flex gap-1">
+
+                <input type="text" class="form-control search-input" formControlName="query"
+                    placeholder="Buscar películas para añadir a la lista...">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
             </form>
         </div>
 
