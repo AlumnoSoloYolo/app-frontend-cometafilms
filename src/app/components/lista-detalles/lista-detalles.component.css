@@ -174,6 +174,21 @@
     box-shadow: 0 0 0 0.2rem rgba(107, 119, 229, 0.25);
     color: white;
   }
+
+  .btn-primary{
+    background: linear-gradient(45deg, #6B77E5, #8a94ed);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(45deg, #5a66d4, #7983dc);
+    transform: translateY(-2px);
+  }
   
   .search-input::placeholder {
     color: rgba(255, 255, 255, 0.5);

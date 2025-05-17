@@ -11,6 +11,7 @@ import { UsuariosListaComponent } from './components/lista-usuarios/lista-usuari
 import { ReseniaDetallesComponent } from './components/resenia-detalles/resenia-detalles.component';
 import { ListaDetallesComponent } from './components/lista-detalles/lista-detalles.component';
 import { NotificacionesComponent } from './components/notificaciones/notificaciones.component';
+import { ActivityFeedComponent } from './components/activity-feed/activity-feed.component';
 
 export const routes: Routes = [
 
@@ -75,6 +76,12 @@ export const routes: Routes = [
     {
         path: 'notificaciones',
         component: NotificacionesComponent,
+        canActivate: [AuthGuard]
+    },
+
+    {
+        path: 'feed',
+        component: ActivityFeedComponent,
         canActivate: [AuthGuard]
     },
 

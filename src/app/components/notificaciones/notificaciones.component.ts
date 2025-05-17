@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UserSocialService } from '../../services/social.service';
+import { SocketService } from '../../services/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notificaciones',
@@ -10,15 +12,44 @@ import { UserSocialService } from '../../services/social.service';
   templateUrl: './notificaciones.component.html',
   styleUrl: './notificaciones.component.css'
 })
-export class NotificacionesComponent implements OnInit {
+export class NotificacionesComponent implements OnInit, OnDestroy {
   followRequests: any[] = [];
   cargando: boolean = false;
   activeTab: 'solicitudes' | 'notificaciones' = 'solicitudes';
+  private socketSubscription?: Subscription;
 
-  constructor(private userSocialService: UserSocialService) { }
+  constructor(
+    private userSocialService: UserSocialService,
+    private socketService: SocketService
+  ) { }
 
   ngOnInit(): void {
     this.cargarSolicitudes();
+
+    // Suscribirse a nuevas solicitudes de seguimiento
+    this.socketSubscription = this.socketService.newFollowRequest$.subscribe(
+      request => {
+        if (request) {
+          // Verificar si ya existe esta solicitud en la lista
+          const existingIndex = this.followRequests.findIndex(r => r._id === request.requestId);
+
+          if (existingIndex === -1) {
+            // La solicitud no existe, añadirla al principio del array
+            this.followRequests.unshift({
+              _id: request.requestId,
+              requester: request.requester,
+              createdAt: request.timestamp
+            });
+          }
+        }
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.socketSubscription) {
+      this.socketSubscription.unsubscribe();
+    }
   }
 
   cargarSolicitudes(): void {

@@ -1,3 +1,14 @@
+/* Contenedor de búsqueda centrado */
+.cyber-window.screen-container {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  background: rgba(13, 17, 23, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+
 /* Estilos para las tarjetas de usuarios */
 .card {
   background: rgba(30, 35, 40, 0.95) !important;
@@ -165,7 +176,7 @@
 
 /* Estilo del buscador */
 .search-input {
-  width: 100%;
+  width: 70%;
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 8px;

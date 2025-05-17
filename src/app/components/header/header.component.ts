@@ -1,12 +1,12 @@
-// En header.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserSocialService } from '../../services/social.service';
+import { SocketService } from '../../services/socket.service';
 import { CommonModule } from '@angular/common';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -16,15 +16,17 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
   pendingRequestsCount: number = 0;
+  private socketSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private userSocialService: UserSocialService
+    private userSocialService: UserSocialService,
+    private socketService: SocketService
   ) {
     this.searchForm = this.fb.group({
       query: ['', [Validators.minLength(2)]]
@@ -36,7 +38,7 @@ export class HeaderComponent implements OnInit {
     if (this.isAuthenticated()) {
       this.cargarSolicitudesPendientes();
 
-      // Verificar solicitudes cada minuto
+      // Verificar solicitudes cada minuto (podemos reducir la frecuencia ahora que tenemos sockets)
       interval(60000).pipe(
         switchMap(() => {
           // Solo hacer la consulta si el usuario sigue autenticado
@@ -53,6 +55,36 @@ export class HeaderComponent implements OnInit {
           console.error('Error al verificar solicitudes pendientes:', error);
         }
       });
+
+      // Suscribirse a nuevas solicitudes de seguimiento
+      this.socketSubscription = this.socketService.newFollowRequest$.subscribe(
+        request => {
+          if (request) {
+            // Incrementar el contador de solicitudes pendientes
+            this.pendingRequestsCount++;
+
+            // Opcional: Mostrar algún indicador visual adicional
+            this.mostrarIndicadorNuevaNotificacion();
+          }
+        }
+      );
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.socketSubscription) {
+      this.socketSubscription.unsubscribe();
+    }
+  }
+
+  mostrarIndicadorNuevaNotificacion() {
+    // Implementar algún efecto visual, como un destello en el ícono de notificaciones
+    const notifyBadge = document.querySelector('.notify-badge');
+    if (notifyBadge) {
+      notifyBadge.classList.add('pulse-animation');
+      setTimeout(() => {
+        notifyBadge.classList.remove('pulse-animation');
+      }, 2000);
     }
   }
 
