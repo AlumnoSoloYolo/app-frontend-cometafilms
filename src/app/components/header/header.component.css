@@ -128,6 +128,16 @@
   font-weight: bold;
 }
 
+@keyframes pulse {
+  0% { transform: translateY(-50%) scale(1); background-color: #FF1493; }
+  50% { transform: translateY(-50%) scale(1.2); background-color: #FF6AC1; }
+  100% { transform: translateY(-50%) scale(1); background-color: #FF1493; }
+}
+
+.notify-badge.pulse-animation {
+  animation: pulse 0.5s ease-in-out 3;
+}
+
 /* Estilos para móviles */
 @media (max-width: 768px) {
   .navbar-collapse {
