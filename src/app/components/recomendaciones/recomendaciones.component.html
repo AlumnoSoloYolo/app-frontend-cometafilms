@@ -1,0 +1,66 @@
+<div class="movie-section premium-section">
+    <div class="section-header">
+        <div class="section-title-container">
+            <h2 class="section-title">Recomendado para ti</h2>
+            <!-- <span class="premium-badge">Premium</span> -->
+        </div>
+        <div class="section-navigation">
+            <button class="btn-nav refresh-btn" (click)="refreshRecommendations()" title="Actualizar recomendaciones"
+                [disabled]="loading">
+                <i class="bi bi-arrow-clockwise" [class.spinning]="loading"></i>
+            </button>
+            <button class="btn-nav" (click)="scrollSection('left')">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn-nav" (click)="scrollSection('right')">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    @if (loading && isPremium) {
+    <div class="loading-spinner text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-white-50">Preparando tus recomendaciones personalizadas...</p>
+    </div>
+    } @else if (error && isPremium) {
+    <div class="error-message text-center py-4">
+        <p class="text-danger">{{ error }}</p>
+    </div>
+    } @else if (isPremium && recommendations.length > 0) {
+    <div class="movie-scroll-container">
+        <div id="recomendaciones" class="movie-scroll-content">
+            @for (movie of recommendations; track movie.id) {
+            <div class="movie-scroll-item">
+                <app-pelicula-card [pelicula]="movie"></app-pelicula-card>
+                <div class="recommendation-container">
+                    <div class="recommendation-arrow"></div>
+                    <div class="recommendation-reason">
+                        <i class="bi bi-magic"></i> {{ movie.recommendationReason }}
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    } @else if (isPremium && recommendations.length === 0) {
+    <div class="no-recommendations text-center py-5">
+        <i class="bi bi-emoji-smile-upside-down fs-1 mb-3 d-block"></i>
+        <p>No tenemos suficientes datos para generar recomendaciones personalizadas.</p>
+        <p class="text-white-50">¡Marca más películas como vistas y añade reseñas para mejorar tus recomendaciones!</p>
+    </div>
+    } @else {
+    <div class="premium-promo">
+        <div class="promo-content">
+            <i class="bi bi-stars fs-1 mb-3"></i>
+            <h3>Recomendaciones personalizadas</h3>
+            <p>Descubre películas seleccionadas específicamente para ti basadas en tus gustos y preferencias.</p>
+            <button class="btn btn-premium mt-3" routerLink="/premium">
+                <i class="bi bi-star-fill me-2"></i> Hazte Premium
+            </button>
+        </div>
+    </div>
+    }
+</div>

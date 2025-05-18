@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { VotoColorPipe } from '../../shared/pipes/voto-color.pipe';
 import { PeliculaCardComponent } from '../pelicula-card/pelicula-card.component';
 import { RouterModule } from '@angular/router';
+import { RecomendacionesComponent } from '../recomendaciones/recomendaciones.component';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, VotoColorPipe, PeliculaCardComponent, RouterModule],
+  imports: [CommonModule, VotoColorPipe, PeliculaCardComponent, RouterModule, RecomendacionesComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,13 +24,20 @@ export class HomeComponent implements OnInit {
   pelisMasValoradas: any[] = [];
   listaGeneros: any[] = [];
   pelisProximosEstrenos: any[] = [];
+  isPremium: boolean = true; // Temporalmente true para probar, luego se obtendrá del usuario
 
-  constructor(private pelisService: PeliculasService) {
+
+  constructor(
+    private pelisService: PeliculasService,
+    private authService: AuthService) {
     window.scrollTo({
       top: -100,
       left: 0,
       behavior: 'smooth'
     });
+
+    // En el futuro, verificar si es premium
+    // this.isPremium = this.authService.getCurrentUser()?.isPremium || false;
   }
 
   ngOnInit(): void {
