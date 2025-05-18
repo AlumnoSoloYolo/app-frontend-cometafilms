@@ -138,6 +138,33 @@
   animation: pulse 0.5s ease-in-out 3;
 }
 
+
+.premium-promo {
+  margin-left: 1rem;
+}
+
+.premium-link {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.premium-link i {
+  margin-right: 0.4rem;
+}
+
+.premium-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(211, 20, 211, 0.3);
+}
+
 /* Estilos para móviles */
 @media (max-width: 768px) {
   .navbar-collapse {

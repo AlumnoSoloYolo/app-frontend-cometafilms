@@ -215,6 +215,73 @@
     animation: spin 1s linear infinite;
 }
 
+
+.premium-required-badge {
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.premium-required-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(211, 20, 211, 0.3);
+}
+
+.premium-upgrade-banner {
+  background: rgba(30, 35, 40, 0.7);
+  border-radius: 10px;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(211, 20, 211, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-upgrade-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+  z-index: -1;
+}
+
+.banner-content {
+  text-align: center;
+}
+
+.banner-content h3 {
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.banner-content p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+}
+
+.btn-upgrade {
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-upgrade:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(211, 20, 211, 0.3);
+}
+
 @keyframes spin {
     from {
         transform: rotate(0deg);

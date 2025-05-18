@@ -12,6 +12,9 @@ import { ReseniaDetallesComponent } from './components/resenia-detalles/resenia-
 import { ListaDetallesComponent } from './components/lista-detalles/lista-detalles.component';
 import { NotificacionesComponent } from './components/notificaciones/notificaciones.component';
 import { ActivityFeedComponent } from './components/activity-feed/activity-feed.component';
+import { PremiumComponent } from './components/premium/premium/premium.component';
+import { PremiumSuccessComponent } from './components/premium/premium-success/premium-success.component';
+import { PremiumCancelComponent } from './components/premium/premium-cancel/premium-cancel.component';
 
 export const routes: Routes = [
 
@@ -76,6 +79,21 @@ export const routes: Routes = [
     {
         path: 'notificaciones',
         component: NotificacionesComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'premium',
+        component: PremiumComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'premium/success',
+        component: PremiumSuccessComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'premium/cancel',
+        component: PremiumCancelComponent,
         canActivate: [AuthGuard]
     },
 

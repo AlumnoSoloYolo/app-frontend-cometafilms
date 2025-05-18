@@ -17,6 +17,16 @@ interface AuthResponse {
     };
 }
 
+
+export interface User {
+    id: string;
+    username: string;
+    email: string;
+    avatar: string;
+    isPremium?: boolean;
+    premiumExpiry?: Date;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -120,6 +130,24 @@ export class AuthService {
 
     isAuthenticated(): boolean {
         return this.getToken() !== null;
+    }
+
+
+    updatePremiumStatus(isPremium: boolean, expiryDate?: string): void {
+        const currentUser = this.currentUserSubject.value;
+        if (currentUser) {
+            const updatedUser = {
+                ...currentUser,
+                isPremium,
+                premiumExpiry: expiryDate ? new Date(expiryDate) : null
+            };
+
+            // Actualizar en localStorage
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+
+            // Actualizar en el subject
+            this.currentUserSubject.next(updatedUser);
+        }
     }
 
 

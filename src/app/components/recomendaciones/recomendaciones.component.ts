@@ -16,7 +16,7 @@ export class RecomendacionesComponent implements OnInit {
   recommendations: any[] = [];
   loading: boolean = true;
   error: string | null = null;
-  isPremium: boolean = true; // Temporalmente true para probar, luego se obtendrá del usuario
+  isPremium: boolean = true;
 
   constructor(
     private recommendationService: RecommendationService,
@@ -24,29 +24,28 @@ export class RecomendacionesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadRecommendations();
+    // Verificar estado premium
+    this.authService.currentUser.subscribe(user => {
+      this.isPremium = user?.isPremium || false;
+      this.loadRecommendations();
+    });
   }
 
   loadRecommendations(): void {
-    // Verificar si el usuario es premium (temporalmente siempre es true)
-    // En el futuro:
-    // this.isPremium = this.authService.getCurrentUser().isPremium;
+    this.loading = true;
+    this.recommendationService.getPersonalizedRecommendations().subscribe({
+      next: (data: any) => {
 
-    if (this.isPremium) {
-      this.loading = true;
-      this.recommendationService.getPersonalizedRecommendations().subscribe({
-        next: (data) => {
-          this.recommendations = data;
-          console.log(this.recommendations)
-          this.loading = false;
-        },
-        error: (error) => {
-          this.error = 'Error al cargar recomendaciones';
-          this.loading = false;
-          console.error('Error cargando recomendaciones:', error);
-        }
-      });
-    }
+        this.recommendations = data.recommendations || [];
+        this.isPremium = data.isPremium || false;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'Error al cargar recomendaciones';
+        this.loading = false;
+        console.error('Error cargando recomendaciones:', error);
+      }
+    });
   }
 
   refreshRecommendations(): void {
