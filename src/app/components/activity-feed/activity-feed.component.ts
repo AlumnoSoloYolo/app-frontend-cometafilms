@@ -70,6 +70,7 @@ export class ActivityFeedComponent implements OnInit, OnDestroy {
     // Usa el parámetro includeOwn=false para excluir actividades propias
     this.activityService.getFeed(pagina, 20, false).subscribe({
       next: (response) => {
+
         if (pagina === 1) {
           this.activities = response.activities;
         } else {

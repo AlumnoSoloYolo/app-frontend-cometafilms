@@ -8,8 +8,8 @@ import { PremiumService } from '../../../services/premium.service';
   selector: 'app-premium-success',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: './premium-success.component.html',
-  styles: './premium-success.component.css'
+  templateUrl: './premium-success.component.html',
+  styleUrls: ['./premium-success.component.css']
 })
 export class PremiumSuccessComponent implements OnInit {
   isProcessing = true;

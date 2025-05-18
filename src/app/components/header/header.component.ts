@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { SocketService } from '../../services/socket.service';
 import { CommonModule } from '@angular/common';
 import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { PremiumService } from '../../services/premium.service';
 
 @Component({
   selector: 'app-header',
@@ -19,29 +20,51 @@ import { switchMap } from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
   pendingRequestsCount: number = 0;
+  isPremiumUser: boolean = false;
+  isMenuOpen: boolean = false;
+  isMobileView: boolean = false;
+
   private socketSubscription?: Subscription;
+  private premiumCheckSubscription?: Subscription;
+  private socialCheckSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
     private userSocialService: UserSocialService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private premiumService: PremiumService
   ) {
     this.searchForm = this.fb.group({
       query: ['', [Validators.minLength(2)]]
     });
+
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    this.isMobileView = window.innerWidth < 992;
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   ngOnInit() {
-    // Si el usuario está autenticado, verificar solicitudes pendientes
+    // Si el usuario está autenticado, verificar solicitudes pendientes y estado premium
     if (this.isAuthenticated()) {
       this.cargarSolicitudesPendientes();
+      this.checkPremiumStatus();
 
-      // Verificar solicitudes cada minuto (podemos reducir la frecuencia ahora que tenemos sockets)
-      interval(60000).pipe(
+      // Verificar solicitudes cada minuto
+      this.socialCheckSubscription = interval(60000).pipe(
         switchMap(() => {
-          // Solo hacer la consulta si el usuario sigue autenticado
           if (this.isAuthenticated()) {
             return this.userSocialService.getPendingFollowRequests();
           }
@@ -60,10 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.socketSubscription = this.socketService.newFollowRequest$.subscribe(
         request => {
           if (request) {
-            // Incrementar el contador de solicitudes pendientes
             this.pendingRequestsCount++;
-
-            // Opcional: Mostrar algún indicador visual adicional
             this.mostrarIndicadorNuevaNotificacion();
           }
         }
@@ -75,10 +95,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
     }
+    if (this.premiumCheckSubscription) {
+      this.premiumCheckSubscription.unsubscribe();
+    }
+    if (this.socialCheckSubscription) {
+      this.socialCheckSubscription.unsubscribe();
+    }
+  }
+
+  checkPremiumStatus() {
+    // Utilizamos tu PremiumService existente
+    this.premiumCheckSubscription = this.premiumService.getPremiumStatus().subscribe({
+      next: (status) => {
+        this.isPremiumUser = status.isPremium;
+        console.log('Estado premium del usuario:', this.isPremiumUser);
+      },
+      error: (error) => {
+        console.error('Error al verificar estado premium:', error);
+        this.isPremiumUser = false;
+      }
+    });
   }
 
   mostrarIndicadorNuevaNotificacion() {
-    // Implementar algún efecto visual, como un destello en el ícono de notificaciones
     const notifyBadge = document.querySelector('.notify-badge');
     if (notifyBadge) {
       notifyBadge.classList.add('pulse-animation');
@@ -100,11 +139,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   buscar(): void {
-    if (this.searchForm.value.query?.trim()) {
+    if (this.searchForm.valid && this.searchForm.value.query?.trim()) {
       this.router.navigate(['/buscador-peliculas'], {
         queryParams: { query: this.searchForm.value.query }
       });
       this.searchForm.reset();
+
+      // Cerrar menú móvil si está abierto
+      if (this.isMenuOpen && this.isMobileView) {
+        this.isMenuOpen = false;
+      }
     }
   }
 
@@ -126,5 +170,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+
+    // Cerrar menú móvil si está abierto
+    if (this.isMenuOpen && this.isMobileView) {
+      this.isMenuOpen = false;
+    }
   }
 }

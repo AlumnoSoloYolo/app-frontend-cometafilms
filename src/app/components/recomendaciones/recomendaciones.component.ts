@@ -14,9 +14,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class RecomendacionesComponent implements OnInit {
   recommendations: any[] = [];
-  loading: boolean = true;
+  loading: boolean = false;
   error: string | null = null;
-  isPremium: boolean = true;
+  isPremium: boolean = false; // Por defecto, asumimos que no es premium
 
   constructor(
     private recommendationService: RecommendationService,
@@ -24,20 +24,25 @@ export class RecomendacionesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Verificar estado premium
+    // Verificar estado premium primero, antes de cargar recomendaciones
     this.authService.currentUser.subscribe(user => {
       this.isPremium = user?.isPremium || false;
-      this.loadRecommendations();
+
+      // Solo cargamos recomendaciones si es usuario premium
+      if (this.isPremium) {
+        this.loadRecommendations();
+      }
     });
   }
 
   loadRecommendations(): void {
+    // Solo cargar si es premium
+    if (!this.isPremium) return;
+
     this.loading = true;
     this.recommendationService.getPersonalizedRecommendations().subscribe({
       next: (data: any) => {
-
-        this.recommendations = data.recommendations || [];
-        this.isPremium = data.isPremium || false;
+        this.recommendations = data || [];
         this.loading = false;
       },
       error: (error) => {
@@ -49,10 +54,12 @@ export class RecomendacionesComponent implements OnInit {
   }
 
   refreshRecommendations(): void {
+    // Solo refrescar si es premium
+    if (!this.isPremium) return;
+
     this.loading = true;
     this.error = null;
 
-    // Llamar al servicio con forceRefresh = true
     this.recommendationService.getPersonalizedRecommendations(15, true).subscribe({
       next: (data) => {
         this.recommendations = data;

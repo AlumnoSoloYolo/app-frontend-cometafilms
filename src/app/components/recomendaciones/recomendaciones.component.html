@@ -1,11 +1,9 @@
-<!-- src/app/components/recomendaciones/recomendaciones.component.html -->
+@if (isPremium) {
+<!-- Contenido actual para usuarios Premium -->
 <div class="movie-section premium-section">
     <div class="section-header">
         <div class="section-title-container">
             <h2 class="section-title">Recomendado para ti</h2>
-            @if (!isPremium) {
-            <span class="premium-required-badge" routerLink="/premium">Premium</span>
-            }
         </div>
         <div class="section-navigation">
             <button class="btn-nav refresh-btn" (click)="refreshRecommendations()" title="Actualizar recomendaciones"
@@ -27,11 +25,7 @@
             <span class="visually-hidden">Cargando...</span>
         </div>
         <p class="mt-3 text-white-50">
-            @if (isPremium) {
             Preparando tus recomendaciones personalizadas...
-            } @else {
-            Cargando recomendaciones...
-            }
         </p>
     </div>
     } @else if (error) {
@@ -53,30 +47,24 @@
             }
         </div>
     </div>
-
-    @if (!isPremium) {
-    <div class="premium-upgrade-banner">
-        <div class="banner-content">
-            <h3>Mejora a Premium para recomendaciones personalizadas</h3>
-            <p>Descubre películas adaptadas a tus gustos basadas en tus películas favoritas</p>
-            <button class="btn-upgrade" routerLink="/premium">
-                Actualizar a Premium
-            </button>
-        </div>
-    </div>
-    }
     } @else {
     <div class="no-recommendations text-center py-5">
         <i class="bi bi-emoji-smile-upside-down fs-1 mb-3 d-block"></i>
         <p>No hay recomendaciones disponibles en este momento.</p>
-        @if (isPremium) {
         <p class="text-white-50">Agrega más películas a tu lista de vistas para mejorar tus recomendaciones.</p>
-        } @else {
-        <p class="text-white-50">Actualiza a Premium para obtener recomendaciones personalizadas.</p>
-        <button class="btn-upgrade mt-3" routerLink="/premium">
-            Actualizar a Premium
-        </button>
-        }
     </div>
     }
 </div>
+} @else {
+<!-- Banner promocional para usuarios no Premium -->
+<div class="premium-promo">
+    <div class="promo-content">
+        <i class="bi bi-stars fs-1 mb-3"></i>
+        <h3>Recomendaciones Personalizadas</h3>
+        <p class="mb-4">Actualiza a Premium para descubrir películas adaptadas a tus gustos basadas en lo que ves.</p>
+        <button class="btn-premium" routerLink="/premium">
+            Hazte Premium
+        </button>
+    </div>
+</div>
+}

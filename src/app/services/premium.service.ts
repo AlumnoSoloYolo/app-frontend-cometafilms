@@ -1,6 +1,6 @@
 // src/app/services/premium.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -10,23 +10,44 @@ import { environment } from '../../environments/environments';
   providedIn: 'root'
 })
 export class PremiumService {
-  private apiUrl = `${environment.apiUrl}/premium`;
+  // Corregido: Usar la ruta /api/premium
+  private apiUrl = `${environment.apiUrl}/api/premium`;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) { }
+  ) {
+    console.log('PremiumService inicializado con URL:', this.apiUrl);
+  }
+
+  // Añadido: Obtener el token de autenticación
+  private getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  // Añadido: Configurar los headers con el token
+  private getHeaders(): { headers: HttpHeaders } {
+    const token = this.getToken();
+    return {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token || ''}`)
+    };
+  }
 
   getPremiumStatus(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/status`);
+    // Añadido: Usar los headers con autenticación
+    return this.http.get(`${this.apiUrl}/status`, this.getHeaders());
   }
 
   createSubscription(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/subscribe`, {});
+    // Añadido: Usar los headers con autenticación
+    return this.http.post(`${this.apiUrl}/subscribe`, {}, this.getHeaders());
   }
 
   capturePayment(orderId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/capture`, { orderId })
+    // Añadido: Usar los headers con autenticación
+    return this.http.post(`${this.apiUrl}/capture`, { orderId }, this.getHeaders())
       .pipe(
         tap((response: any) => {
           if (response.success) {
@@ -38,6 +59,7 @@ export class PremiumService {
   }
 
   cancelSubscription(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/cancel`, {});
+    // Añadido: Usar los headers con autenticación
+    return this.http.post(`${this.apiUrl}/cancel`, {}, this.getHeaders());
   }
 }

@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-premium-cancel',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: './premium-cancel.component.html',
-  styles: './premium-cancel.component.css'
+  templateUrl: './premium-cancel.component.html',
+  styleUrls: ['./premium-cancel.component.css']
 })
 export class PremiumCancelComponent { }
