@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
     });
 
     // En el futuro, verificar si es premium
-    // this.isPremium = this.authService.getCurrentUser()?.isPremium || false;
+    //  this.isPremium = this.authService.getCurrentUser()?.isPremium || false;
   }
 
   ngOnInit(): void {

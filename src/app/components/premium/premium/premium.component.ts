@@ -16,6 +16,7 @@ export class PremiumComponent implements OnInit {
   error: string | null = null;
   premiumStatus: any = null;
   processingPayment = false;
+  subscriptionHistory: any[] = [];
 
   constructor(
     private premiumService: PremiumService,
@@ -32,6 +33,7 @@ export class PremiumComponent implements OnInit {
     this.premiumService.getPremiumStatus().subscribe({
       next: (status) => {
         this.premiumStatus = status;
+        this.subscriptionHistory = status.subscriptionHistory || [];
         this.isLoading = false;
       },
       error: (err) => {
@@ -39,7 +41,7 @@ export class PremiumComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
+}
 
   startSubscription() {
     this.processingPayment = true;

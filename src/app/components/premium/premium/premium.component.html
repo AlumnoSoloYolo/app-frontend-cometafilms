@@ -28,6 +28,12 @@
             <p>Tu suscripción Premium está activa</p>
             <p class="expiry-date">Expira el: {{ premiumStatus.premiumExpiry | date:'longDate' }}</p>
             <p class="days-left">{{ premiumStatus.remainingDays }} días restantes</p>
+            @if (premiumStatus.isCanceled) {
+                <div class="cancellation-notice">
+                    <i class="bi bi-info-circle"></i>
+                    <span>Has cancelado tu suscripción. Seguirás disfrutando de Premium hasta la fecha de expiración.</span>
+                </div>
+                }
         </div>
 
         <div class="premium-benefits">
@@ -39,11 +45,55 @@
             </ul>
         </div>
 
-        <div class="subscription-actions">
-            <button class="btn btn-cancel-subscription" (click)="cancelSubscription()">
-                Cancelar suscripción
-            </button>
+        <div class="subscription-history">
+            <h3 class="history-title">
+                <i class="bi bi-clock-history"></i>
+                Historial de Suscripciones
+            </h3>
+            @if (subscriptionHistory && subscriptionHistory.length > 0) {
+            <div class="history-timeline">
+                @for (entry of subscriptionHistory; track entry.date) {
+                <div class="history-item">
+                    <div class="history-icon">
+                        <i class="bi" [ngClass]="{
+                            'bi-plus-circle-fill': entry.action === 'subscribed', 
+                            'bi-arrow-repeat': entry.action === 'renewed',
+                            'bi-x-circle-fill': entry.action === 'canceled',
+                            'bi-dash-circle-fill': entry.action === 'expired'
+                        }"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-date">{{ entry.date | date:'medium' }}</div>
+                        <div class="history-action">
+                            @if (entry.action === 'subscribed') {
+                            <span>Suscripción activada</span>
+                            } @else if (entry.action === 'renewed') {
+                            <span>Suscripción renovada</span>
+                            } @else if (entry.action === 'canceled') {
+                            <span>Cancelación solicitada</span>
+                            } @else if (entry.action === 'expired') {
+                            <span>Suscripción expirada</span>
+                            }
+                        </div>
+                        @if (entry.details) {
+                        <div class="history-details">{{ entry.details }}</div>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <p class="no-history">No hay registros de suscripción disponibles.</p>
+            }
         </div>
+
+        @if (!premiumStatus.isCanceled) {
+            <div class="subscription-actions">
+                <button class="btn btn-cancel-subscription" (click)="cancelSubscription()">
+                    Cancelar suscripción
+                </button>
+            </div>
+            }
     </div>
     } @else {
     <div class="plans-comparison">
