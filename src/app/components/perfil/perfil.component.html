@@ -348,7 +348,7 @@
         <div class="section-header">
             <div class="section-title-container">
                 <h2 class="section-title">Listas de Películas</h2>
-                <span class="count-badge">{{ listas.length }}</span>
+                <span class="count-badge">{{ totalListas }}</span>
             </div>
             <div class="section-navigation">
                 @if (isOwnProfile) {
@@ -364,7 +364,16 @@
                 </button>
             </div>
         </div>
-
+    
+        <!-- Mensaje de listas ocultas para usuarios no premium -->
+        @if (isOwnProfile && !isPremium && listasOcultas > 0) {
+        <div class="premium-required-alert mb-3">
+            <i class="bi bi-lock-fill me-2"></i>
+            Tienes {{ listasOcultas }} listas adicionales ocultas. Hazte Premium para acceder a todas tus listas.
+            <a routerLink="/premium" class="ms-2 btn-upgrade-mini">Actualizar</a>
+        </div>
+        }
+    
         <div id="listas" class="movie-scroll-container">
             <div class="movie-scroll-content">
                 @if (isOwnProfile || !userProfile.perfilPrivado || isFollowing) {

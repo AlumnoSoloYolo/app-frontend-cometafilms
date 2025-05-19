@@ -76,7 +76,11 @@ export class PerfilComponent implements OnInit {
   mostrarModalSeguidores: boolean = false;
   mostrarModalSeguidos: boolean = false;
   usuariosFiltrados: any[] = [];
-  filtroUsuarios: string = ''
+  filtroUsuarios: string = '';
+
+  totalListas: number = 0;
+  listasOcultas: number = 0;
+  isPremium: boolean = false;
 
   constructor(
     private userMovieService: UserMovieService,
@@ -521,22 +525,28 @@ export class PerfilComponent implements OnInit {
   // Métodos para listas
   cargarListasPropias(): void {
     this.movieListsService.getUserLists().subscribe({
-      next: (data) => {
-        this.listas = data;
+      next: (response) => {
+        this.listas = response.lists;
+        this.totalListas = response.totalLists || this.listas.length;
+        this.listasOcultas = response.hiddenLists || 0;
+        this.isPremium = response.isPremium || false;
       },
       error: (error) => {
         console.error('Error al cargar listas:', error);
       }
     });
   }
-
+  
   cargarListasUsuario(userId: string): void {
     console.log(`Cargando listas para el usuario: ${userId}`);
     // Para listas públicas de otro usuario
     this.movieListsService.getUserPublicLists(userId).subscribe({
-      next: (data) => {
-        console.log(`Listas recibidas:`, data);
-        this.listas = data;
+      next: (response) => {
+        console.log(`Listas recibidas:`, response);
+        this.listas = response.lists;
+        this.totalListas = response.totalLists || this.listas.length;
+        this.listasOcultas = response.hiddenLists || 0;
+        this.isPremium = response.isPremium || false;
       },
       error: (error) => {
         console.error('Error al cargar listas de usuario:', error);
@@ -567,12 +577,12 @@ export class PerfilComponent implements OnInit {
       console.log('Formulario inválido', this.listaForm.errors);
       return;
     }
-
+  
     const formData = this.listaForm.value;
     console.log('Datos del formulario:', formData);
-
+  
     let coverImageBase64 = null;
-
+  
     // Si hay un archivo seleccionado, convertirlo a base64
     if (this.selectedFile) {
       try {
@@ -583,19 +593,37 @@ export class PerfilComponent implements OnInit {
         return;
       }
     }
-
+  
     const listaData = {
       ...formData,
       coverImage: coverImageBase64
     };
-
+  
     console.log('Enviando datos al servidor:', listaData);
-
+  
     // Crear nueva lista
     this.movieListsService.createList(listaData).subscribe({
       next: (response) => {
         console.log('Respuesta del servidor:', response);
-        this.listas.unshift(response.list); // Agregar al inicio del array
+        
+        // Asegurarnos de que tenemos la nueva lista
+        if (response && response.list) {
+          // Asegurar que listas es un array
+          if (!Array.isArray(this.listas)) {
+            this.listas = [];
+          }
+          
+          // Añadir la nueva lista al principio
+          this.listas.unshift(response.list);
+          
+          // Actualizar los contadores
+          this.totalListas = (this.totalListas || 0) + 1;
+          
+          console.log('Lista añadida localmente, total ahora:', this.totalListas);
+        } else {
+          console.error('Respuesta del servidor no contiene la lista', response);
+        }
+        
         this.cerrarFormularioLista();
       },
       error: (error) => {

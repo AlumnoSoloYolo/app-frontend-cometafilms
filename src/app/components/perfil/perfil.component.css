@@ -1002,6 +1002,33 @@
   transform: translateY(-2px);
 }
 
+.premium-required-alert {
+  background: rgba(211, 20, 211, 0.1);
+  border: 1px solid rgba(211, 20, 211, 0.3);
+  color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.btn-upgrade-mini {
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-upgrade-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(211, 20, 211, 0.3);
+}
+
 /* Scrollbar styling for the users list */
 .users-list::-webkit-scrollbar {
   width: 6px;

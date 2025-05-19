@@ -1,4 +1,4 @@
-// src/app/components/premium/premium-success.component.ts
+// src/app/components/premium/premium-success/premium-success.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
@@ -52,6 +52,9 @@ export class PremiumSuccessComponent implements OnInit {
         this.success = true;
         this.isProcessing = false;
         this.expiryDate = new Date(response.premiumExpiry);
+        
+        // Forzar actualización del estado premium en toda la aplicación
+        this.premiumService.refreshPremiumStatus();
       },
       error: (err) => {
         this.error = 'Error al procesar el pago. Por favor, contacta con soporte si el problema persiste.';

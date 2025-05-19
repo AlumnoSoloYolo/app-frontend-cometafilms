@@ -372,17 +372,16 @@ export class PeliculaDetallesComponent implements OnInit {
   }
 
   cargarMisListas(): void {
-    this.cargandoListas = true;
-    this.movieListsService.getUserLists().subscribe({
-      next: (listas) => {
-        this.misListas = listas;
-        this.cargandoListas = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar listas:', error);
-        this.cargandoListas = false;
-      }
-    });
+    if (this.authService.isAuthenticated()) {
+      this.movieListsService.getUserLists().subscribe({
+        next: (response) => {
+          this.misListas = response.lists;
+        },
+        error: (error) => {
+          console.error('Error al cargar listas:', error);
+        }
+      });
+    }
   }
 
   peliculaEnLista(lista: MovieList, movieId: string): boolean {

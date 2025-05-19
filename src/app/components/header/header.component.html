@@ -2,20 +2,19 @@
 <header class="site-header">
     <div class="container">
         <div class="header-wrapper">
-            <!-- Logo -->
+         
             <a class="brand-logo" routerLink="/" (click)="isMenuOpen = false">
                 <img src="images/logo.png" alt="CometaCine Logo" class="logo-image">
             </a>
 
-            <!-- Toggle button for mobile -->
+        
             <button class="menu-toggle" [class.active]="isMenuOpen" (click)="toggleMenu()" type="button"
                 aria-label="Toggle navigation">
                 <span class="toggle-icon"></span>
             </button>
 
-            <!-- Navigation and actions container -->
             <div class="nav-container" [class.open]="isMenuOpen">
-                <!-- Main navigation -->
+              
                 <nav class="main-nav">
                     <ul class="nav-links">
                         <li class="nav-item">
@@ -39,15 +38,15 @@
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/feed" routerLinkActive="active"
                                 (click)="navigateTo('/feed')">
-                                <i class="bi bi-activity"></i> Feed
+                                <i class="bi bi-activity"></i> Actividad
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-                <!-- User actions section -->
+           
                 <div class="user-actions">
-                    <!-- Search form -->
+            
                     <form [formGroup]="searchForm" (ngSubmit)="buscar()" class="search-form">
                         <div class="search-wrapper">
                             <input class="search-input" type="search" formControlName="query"
@@ -67,7 +66,7 @@
                     </div>
                     }
 
-                    <!-- User profile dropdown - Using Bootstrap Dropdown -->
+                 
                     <div class="dropdown user-dropdown">
                         <button class="profile-toggle dropdown-toggle" type="button" id="userDropdown"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,7 +90,7 @@
                                 </a>
                             </li>
 
-                            <!-- Premium subscription option - shown only for premium users -->
+                   
                             @if (isPremiumUser) {
                             <li>
                                 <a class="dropdown-item" routerLink="/premium" (click)="navigateTo('/premium')">
@@ -119,7 +118,7 @@
 <header class="site-header">
     <div class="container">
         <div class="header-wrapper">
-            <!-- Logo for logged out state -->
+          
             <a class="brand-logo" routerLink="/">
                 <img src="images/logo.png" alt="CometaCine Logo" class="logo-image">
             </a>

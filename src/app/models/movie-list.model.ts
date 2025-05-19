@@ -14,3 +14,10 @@ export interface MovieList {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ListsResponse {
+    lists: MovieList[];
+    isPremium?: boolean;
+    totalLists?: number;
+    hiddenLists?: number;
+}

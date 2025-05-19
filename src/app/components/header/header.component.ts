@@ -6,8 +6,8 @@ import { AuthService } from '../../services/auth.service';
 import { UserSocialService } from '../../services/social.service';
 import { SocketService } from '../../services/socket.service';
 import { CommonModule } from '@angular/common';
-import { interval, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { interval, Subscription, combineLatest } from 'rxjs';
+import { switchMap, filter, startWith, distinctUntilChanged } from 'rxjs/operators';
 import { PremiumService } from '../../services/premium.service';
 
 @Component({
@@ -25,8 +25,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isMobileView: boolean = false;
 
   private socketSubscription?: Subscription;
-  private premiumCheckSubscription?: Subscription;
+  private premiumSubscription?: Subscription;
   private socialCheckSubscription?: Subscription;
+  private authStatusSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -57,62 +58,97 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Si el usuario está autenticado, verificar solicitudes pendientes y estado premium
-    if (this.isAuthenticated()) {
-      this.cargarSolicitudesPendientes();
-      this.checkPremiumStatus();
+    // Comprobar estado de autenticación y luego configurar todo
+    this.authStatusSubscription = this.authService.currentUser
+      .pipe(
+        // Solo realizar operaciones cuando hay un usuario autenticado
+        filter(user => !!user)
+      )
+      .subscribe(() => {
+        this.setupPremiumCheck();
+        this.cargarSolicitudesPendientes();
+        this.setupSocketListeners();
+      });
+  }
 
-      // Verificar solicitudes cada minuto
-      this.socialCheckSubscription = interval(60000).pipe(
-        switchMap(() => {
-          if (this.isAuthenticated()) {
-            return this.userSocialService.getPendingFollowRequests();
+  setupPremiumCheck() {
+    // Simplificar: suscribirse directamente al estado premium 
+    // sin crear un combineLatest innecesario
+    this.premiumSubscription = this.premiumService.premiumStatus$
+      .pipe(
+        // Filtrar valores nulos
+        filter(status => !!status)
+      )
+      .subscribe({
+        next: (status) => {
+          // Solo loguear si realmente cambia el valor
+          if (this.isPremiumUser !== status.isPremium) {
+            console.log('Estado premium actualizado:', status);
           }
-          return [];
-        })
-      ).subscribe({
-        next: (solicitudes) => {
-          this.pendingRequestsCount = solicitudes.length;
+          this.isPremiumUser = status.isPremium;
         },
         error: (error) => {
-          console.error('Error al verificar solicitudes pendientes:', error);
+          console.error('Error al verificar estado premium:', error);
+          this.isPremiumUser = false;
         }
       });
-
-      // Suscribirse a nuevas solicitudes de seguimiento
-      this.socketSubscription = this.socketService.newFollowRequest$.subscribe(
-        request => {
-          if (request) {
-            this.pendingRequestsCount++;
-            this.mostrarIndicadorNuevaNotificacion();
-          }
+      
+    // Iniciar verificación de estado premium
+    this.premiumService.getPremiumStatus().subscribe();
+    
+    // Configurar verificación periódica cada 5 minutos
+    // Pero sin usar combineLatest para evitar múltiples emisiones
+    this.socialCheckSubscription = interval(5 * 60 * 1000)
+      .subscribe(() => {
+        if (this.isAuthenticated()) {
+          this.premiumService.getPremiumStatus(true).subscribe();
         }
-      );
-    }
+      });
+  }
+
+  setupSocketListeners() {
+    // Suscribirse a nuevas solicitudes de seguimiento
+    this.socketSubscription = this.socketService.newFollowRequest$.subscribe(
+      request => {
+        if (request) {
+          this.pendingRequestsCount++;
+          this.mostrarIndicadorNuevaNotificacion();
+        }
+      }
+    );
   }
 
   ngOnDestroy() {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
     }
-    if (this.premiumCheckSubscription) {
-      this.premiumCheckSubscription.unsubscribe();
+    if (this.premiumSubscription) {
+      this.premiumSubscription.unsubscribe();
     }
     if (this.socialCheckSubscription) {
       this.socialCheckSubscription.unsubscribe();
     }
+    if (this.authStatusSubscription) {
+      this.authStatusSubscription.unsubscribe();
+    }
   }
 
-  checkPremiumStatus() {
-    // Utilizamos tu PremiumService existente
-    this.premiumCheckSubscription = this.premiumService.getPremiumStatus().subscribe({
-      next: (status) => {
-        this.isPremiumUser = status.isPremium;
-        console.log('Estado premium del usuario:', this.isPremiumUser);
+  cargarSolicitudesPendientes(): void {
+    // Verificar solicitudes al iniciar y cada minuto
+    this.socialCheckSubscription = interval(60000).pipe(
+      startWith(0),
+      switchMap(() => {
+        if (this.isAuthenticated()) {
+          return this.userSocialService.getPendingFollowRequests();
+        }
+        return [];
+      })
+    ).subscribe({
+      next: (solicitudes) => {
+        this.pendingRequestsCount = solicitudes.length;
       },
       error: (error) => {
-        console.error('Error al verificar estado premium:', error);
-        this.isPremiumUser = false;
+        console.error('Error al verificar solicitudes pendientes:', error);
       }
     });
   }
@@ -125,17 +161,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         notifyBadge.classList.remove('pulse-animation');
       }, 2000);
     }
-  }
-
-  cargarSolicitudesPendientes(): void {
-    this.userSocialService.getPendingFollowRequests().subscribe({
-      next: (solicitudes) => {
-        this.pendingRequestsCount = solicitudes.length;
-      },
-      error: (error) => {
-        console.error('Error al cargar solicitudes pendientes:', error);
-      }
-    });
   }
 
   buscar(): void {

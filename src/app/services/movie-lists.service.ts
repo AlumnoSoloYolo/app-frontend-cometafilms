@@ -1,9 +1,9 @@
 // src/app/services/movie-lists.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environments';
-import { MovieList } from '../models/movie-list.model';
+import { MovieList, ListsResponse } from '../models/movie-list.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +37,8 @@ export class MovieListsService {
   }
 
   // Obtener todas las listas del usuario actual
-  getUserLists(): Observable<MovieList[]> {
-    return this.http.get<MovieList[]>(
+  getUserLists(): Observable<ListsResponse> {
+    return this.http.get<ListsResponse>(
       `${this.apiUrl}/lists`,
       this.getHeaders()
     );
@@ -73,13 +73,12 @@ export class MovieListsService {
   }
 
   // Obtener listas públicas de un usuario específico
-  getUserPublicLists(userId: string): Observable<MovieList[]> {
-    return this.http.get<MovieList[]>(
+  getUserPublicLists(userId: string): Observable<ListsResponse> {
+    return this.http.get<ListsResponse>(
       `${this.apiUrl}/users/${userId}/lists`,
       this.getHeaders()
     );
   }
-
 
   // Actualizar una lista existente
   updateList(listId: string, listData: any): Observable<any> {
