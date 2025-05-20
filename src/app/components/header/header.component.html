@@ -2,51 +2,51 @@
 <header class="site-header">
     <div class="container">
         <div class="header-wrapper">
-         
+
             <a class="brand-logo" routerLink="/" (click)="isMenuOpen = false">
                 <img src="images/logo.png" alt="CometaCine Logo" class="logo-image">
             </a>
 
-        
+
             <button class="menu-toggle" [class.active]="isMenuOpen" (click)="toggleMenu()" type="button"
                 aria-label="Toggle navigation">
                 <span class="toggle-icon"></span>
             </button>
 
             <div class="nav-container" [class.open]="isMenuOpen">
-              
+
                 <nav class="main-nav">
                     <ul class="nav-links">
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/" routerLinkActive="active"
                                 [routerLinkActiveOptions]="{exact: true}" (click)="navigateTo('/')">
-                                <i class="bi bi-house-door"></i> Inicio
+                                <i class="fas fa-sun"></i> Inicio
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/buscador-peliculas" routerLinkActive="active"
                                 (click)="navigateTo('/buscador-peliculas')">
-                                <i class="bi bi-film"></i> Películas
+                                <i class="fas fa-meteor"></i> Películas
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/usuarios" routerLinkActive="active"
                                 (click)="navigateTo('/usuarios')">
-                                <i class="bi bi-people"></i> Comunidad
+                                <i class="fas fa-globe-europe"></i> Comunidad
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/feed" routerLinkActive="active"
                                 (click)="navigateTo('/feed')">
-                                <i class="bi bi-activity"></i> Actividad
+                                <i class="fas fa-satellite"></i> Actividad
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-           
+
                 <div class="user-actions">
-            
+
                     <form [formGroup]="searchForm" (ngSubmit)="buscar()" class="search-form">
                         <div class="search-wrapper">
                             <input class="search-input" type="search" formControlName="query"
@@ -66,7 +66,7 @@
                     </div>
                     }
 
-                 
+
                     <div class="dropdown user-dropdown">
                         <button class="profile-toggle dropdown-toggle" type="button" id="userDropdown"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,7 +90,7 @@
                                 </a>
                             </li>
 
-                   
+
                             @if (isPremiumUser) {
                             <li>
                                 <a class="dropdown-item" routerLink="/premium" (click)="navigateTo('/premium')">
@@ -118,7 +118,7 @@
 <header class="site-header">
     <div class="container">
         <div class="header-wrapper">
-          
+
             <a class="brand-logo" routerLink="/">
                 <img src="images/logo.png" alt="CometaCine Logo" class="logo-image">
             </a>
